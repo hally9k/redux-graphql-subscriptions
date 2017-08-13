@@ -1,6 +1,6 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "main": "src/index.js",
   "directories": {
@@ -17,11 +17,7 @@
     "type": "git",
     "url": "git@github.com-hally9k:hally9k/redux-graphql-subscriptions.git"
   },
-  "keywords": [
-    "Redux",
-    "GraphQL",
-    "Subscriptions"
-  ],
+  "keywords": ["Redux", "GraphQL", "Subscriptions"],
   "author": "hally9k",
   "license": "MIT"
 }
