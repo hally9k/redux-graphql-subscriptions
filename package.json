@@ -1,0 +1,27 @@
+{
+  "name": "redux-graphql-subscriptions",
+  "version": "0.0.1",
+  "description": "A Redux middleware for managing GraphQL Subscriptions.",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "subscriptions-transport-ws": "^0.8.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-hally9k:hally9k/redux-graphql-subscriptions.git"
+  },
+  "keywords": [
+    "Redux",
+    "GraphQL",
+    "Subscriptions"
+  ],
+  "author": "hally9k",
+  "license": "MIT"
+}
