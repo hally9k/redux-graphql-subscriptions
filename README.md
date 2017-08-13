@@ -9,7 +9,8 @@ This repo leverages [subscriptions-transport-ws](https://github.com/apollographq
 - Import the package `npm install --save redux-graphql-subscriptions`
 - Instantiate the middleware, passing in the url of your websocket server. 
 - Pass the middleware instance into your redux store.
-```import { createStore, combineReducers, applyMiddleware } from 'redux'
+```
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 import reducers from 'ducks'
 import createGraphQLSubscriptionsMiddleware from 'redux-graphql-subscriptions'
 
