@@ -2,7 +2,7 @@
 
 A Redux middleware for handling GraphQL subscriptions.
 
-This repo leverages [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws) which is the awesome work of the Apollo guys [over here](https://github.com/apollographql).
+This repo leverages [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws) which is the awesome work of the Apollo guys [over here](https://github.com/apollographql) and is intended to be coupled with a backend server that uses subscriptions-transport-ws.
 
 ## API
 
@@ -21,6 +21,7 @@ This repo leverages [subscriptions-transport-ws](https://github.com/apollographq
 - `subscription: Object` : the required fields for a subscription
   * `id: string` : id to register the subscription under
   * `query: string` : GraphQL subscription
+  * `variables?: Object` : GraphQL variables
   * `success: function` : The action creator to be dispatched when the subscription response contains no errors
   * `failure: function` : The action creator to be dispatched when the subscription response does contain errors
 
