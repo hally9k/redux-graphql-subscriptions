@@ -4,6 +4,8 @@ A Redux middleware for handling GraphQL subscriptions.
 
 This repo leverages [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws) which is the awesome work of the Apollo guys [over here](https://github.com/apollographql) and is intended to be coupled with a backend server that also uses subscriptions-transport-ws.
 
+This is totally work in progress so all comment, critique help welcomed!
+
 ## Getting Started
 
 - Import the package `npm install --save redux-graphql-subscriptions`
@@ -19,9 +21,38 @@ const graphQLSubscriptionsMiddleware = createGraphQLSubscriptionsMiddleware('ws:
 let todoApp = combineReducers(reducers)
 let store = createStore(
   todoApp,
-  // applyMiddleware() tells createStore() how to handle middleware
   applyMiddleware(logger, graphQLSubscriptionsMiddleware)
 )
+```
+
+- Import the subscribe and unsubscribe functions and use them in action creators.
+
+```
+import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
+
+export const subscribeToNewComments = () => subscribe(newComment)
+export const unsubscribeFromNewComments = () => unsubscribe(newComment.id)
+
+// Subscription object
+const newComment = {
+    id: 'newComment',
+    query: newCommentSubscription,
+    success: receivedNewComment,
+    failure: receivedNewCommentWithErrors,
+}
+```
+
+- You can use those action creators in your lifcycle hooks to subscribe and unsubscribe from subscriptions that a component is dependent upon like this...
+
+```
+    componentWillMount() {
+        this.props.subscribeToNewComments()
+        this.props.fetchingCommentHistory()
+    }
+
+    componentWillUnMount() {
+        this.props.unsubscribeFromNewComments()
+    }
 ```
 
 ## API
