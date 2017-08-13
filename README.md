@@ -6,7 +6,6 @@ This repo leverages [subscriptions-transport-ws](https://github.com/apollographq
 
 ## API
 
-*createGraphQLSubscriptionsMiddleware(url, options)*
 ### `createGraphQLSubscriptionsMiddleware(url, options)`
 - `url: string` : url that the client will connect to, starts with `ws://` or `wss://`
 - `options?: Object` : optional, object to modify default client behavior
