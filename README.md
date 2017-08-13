@@ -20,7 +20,8 @@ let store = createStore(
   todoApp,
   // applyMiddleware() tells createStore() how to handle middleware
   applyMiddleware(logger, graphQLSubscriptionsMiddleware)
-)```
+)
+```
 
 ## API
 
