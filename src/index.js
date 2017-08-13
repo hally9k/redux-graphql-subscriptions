@@ -28,9 +28,13 @@ export default function createGraphQLSubscriptionsMiddleware(url, options) {
   }
 }
 
-const wsSubscribe = (client, dispatch, { id, query, success, failure }) =>
+const wsSubscribe = (
+  client,
+  dispatch,
+  { id, query, variables, success, failure },
+) =>
   client.subscribe(
-    { query },
+    { query, variables },
     (error, res) =>
       error ? dispatch(failure(error)) : dispatch(success(res[id])),
   )
