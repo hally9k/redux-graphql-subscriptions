@@ -15,9 +15,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com-hally9k:hally9k/redux-graphql-subscriptions.git"
+    "url": "https://github.com/hally9k/redux-graphql-subscriptions"
   },
   "keywords": ["Redux", "GraphQL", "Subscriptions"],
-  "author": "hally9k",
+  "author": "Hal Smith Stevens <hally9k@gmail.com> (https://github.com/hally9k)",
   "license": "MIT"
 }
