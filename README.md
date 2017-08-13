@@ -21,7 +21,7 @@ This repo leverages [subscriptions-transport-ws](https://github.com/apollographq
 - `subscription: Object` : the required fields for a subscription
   * `id: string` : id to register the subscription under
   * `query: string` : GraphQL subscription
-  * `variables?: Object` : GraphQL variables
+  * `variables?: Object` : GraphQL subscription variables
   * `success: function` : The action creator to be dispatched when the subscription response contains no errors
   * `failure: function` : The action creator to be dispatched when the subscription response does contain errors
 
