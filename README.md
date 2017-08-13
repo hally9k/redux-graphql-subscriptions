@@ -15,7 +15,6 @@ This repo leverages [subscriptions-transport-ws](https://github.com/apollographq
   * `reconnect?: boolean` : automatic reconnect in case of connection error
   * `reconnectionAttempts?: number` : how much reconnect attempts
   * `connectionCallback?: (error) => {}` : optional, callback that called after the first init message, with the error (if there is one)
-- `webSocketImpl?: Object` - optional, WebSocket implementation. use this when your environment does not have a built-in native WebSocket (for example, with NodeJS client) 
 
 ### `subscribe(subscription)`
 - `subscription: Object` : the required fields for a subscription
