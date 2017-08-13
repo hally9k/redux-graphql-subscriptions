@@ -4,6 +4,24 @@ A Redux middleware for handling GraphQL subscriptions.
 
 This repo leverages [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws) which is the awesome work of the Apollo guys [over here](https://github.com/apollographql) and is intended to be coupled with a backend server that also uses subscriptions-transport-ws.
 
+## Getting Started
+
+- Import the package `npm install --save redux-graphql-subscriptions`
+- Instantiate the middleware, passing in the url of your websocket server. 
+- Pass the middleware instance into your redux store.
+```import { createStore, combineReducers, applyMiddleware } from 'redux'
+import reducers from 'ducks'
+import createGraphQLSubscriptionsMiddleware from 'redux-graphql-subscriptions'
+
+const graphQLSubscriptionsMiddleware = createGraphQLSubscriptionsMiddleware('ws://localhost:8001/subscriptions')
+
+let todoApp = combineReducers(reducers)
+let store = createStore(
+  todoApp,
+  // applyMiddleware() tells createStore() how to handle middleware
+  applyMiddleware(logger, graphQLSubscriptionsMiddleware)
+)```
+
 ## API
 
 ### `createGraphQLSubscriptionsMiddleware(url, options)`
