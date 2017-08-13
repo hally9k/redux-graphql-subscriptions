@@ -44,5 +44,5 @@ let store = createStore(
   * `success: function` : The action creator to be dispatched when the subscription response contains no errors
   * `failure: function` : The action creator to be dispatched when the subscription response does contain errors
 
-### `subscribe(id)`
+### `unsubscribe(id)`
 - `id: string` : id of the subscription to unsubscribe
