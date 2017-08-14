@@ -1,6 +1,6 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "main": "src/index.js",
   "directories": {
@@ -12,6 +12,9 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "redux": ">= 3.7.0"
   },
   "repository": {
     "type": "git",
