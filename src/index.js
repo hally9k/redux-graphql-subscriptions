@@ -14,15 +14,26 @@ export const unsubscribe = subscriptionName => ({
   payload: subscriptionName,
 })
 
+const refs = {}
+
 export default function createGraphQLSubscriptionsMiddleware(url, options) {
   const wsClient = new SubscriptionClient(url, options)
 
   return ({ dispatch }) => next => action => {
-    if (action.type === SUBSCRIBE) {
+    const { type } = action
+
+    if (type === SUBSCRIBE) {
+      const { payload: { variables: { channel } } } = action
+      refs[channel] ? refs[channel]++ : (refs[channel] = 1)
+      console.log(refs)
       wsSubscribe(wsClient, dispatch, action.payload)
     }
-    if (action.type === UNSUBSCRIBE) {
-      wsUnsubscribe(wsClient, action.payload)
+    if (type === UNSUBSCRIBE) {
+      const { payload: { variables: { channel } } } = action
+      refs[channel] >= 1 ? refs[channel]-- : (refs[channel] = null)
+      if (refs[channel] <= 0) {
+        wsUnsubscribe(wsClient, action.payload)
+      }
     }
     next(action)
   }
@@ -31,12 +42,12 @@ export default function createGraphQLSubscriptionsMiddleware(url, options) {
 const wsSubscribe = (
   client,
   dispatch,
-  { id, query, variables, success, failure },
+  { query, variables, success, failure },
 ) =>
   client.subscribe(
     { query, variables },
     (error, res) =>
-      error ? dispatch(failure(error)) : dispatch(success(res[id])),
+      error ? dispatch(failure(error)) : dispatch(success(res[channel])),
   )
 
-const wsUnsubscribe = (client, id) => client.unsubscribe(id)
+const wsUnsubscribe = (client, channel) => client.unsubscribe(channel)

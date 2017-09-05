@@ -1,12 +1,13 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "main": "src/index.js",
   "directories": {
     "test": "tests"
   },
   "dependencies": {
+    "graphql": "^0.11.2",
     "subscriptions-transport-ws": "^0.8.2"
   },
   "devDependencies": {},
