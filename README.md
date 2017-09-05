@@ -50,7 +50,7 @@ const newComment = {
         this.props.fetchingCommentHistory()
     }
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         this.props.unsubscribeFromNewComments()
     }
 ```
