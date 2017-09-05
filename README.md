@@ -9,7 +9,7 @@ This is totally work in progress so all comment, critique help welcomed!
 ## Getting Started
 
 - Import the package `npm install --save redux-graphql-subscriptions`
-- Instantiate the middleware, passing in the url of your websocket server. 
+- Instantiate the middleware, passing in the url of your websocket server.
 - Pass the middleware instance into your redux store.
 ```
 import { createStore, combineReducers, applyMiddleware } from 'redux'
@@ -30,19 +30,18 @@ let store = createStore(
 ```
 import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
 
-export const subscribeToNewComments = () => subscribe(newComment)
-export const unsubscribeFromNewComments = () => unsubscribe(newComment.id)
+export const subscribeToNewComments = () => subscribe({ ...newComment, { channel: 'one' } })
+export const unsubscribeFromNewComments = () => unsubscribe('one')
 
 // Subscription object
 const newComment = {
-    id: 'newComment',
     query: newCommentSubscription,
     success: receivedNewComment,
     failure: receivedNewCommentWithErrors,
 }
 ```
 
-- You can use those action creators in your lifcycle hooks to subscribe and unsubscribe from subscriptions that a component is dependent upon like this...
+- You can use those action creators in your lifecycle hooks to subscribe and unsubscribe from subscriptions that a component is dependent upon like this...
 
 ```
     componentWillMount() {
@@ -64,16 +63,15 @@ const newComment = {
   * `lazy?: boolean` : use to set lazy mode - connects only when first subscription created, and delay the socket initialization
   * `connectionParams?: Object | Function` : object that will be available as first argument of `onConnect` (in server side), if passed a function - it will call it and send the return value
   * `reconnect?: boolean` : automatic reconnect in case of connection error
-  * `reconnectionAttempts?: number` : how much reconnect attempts
+  * `reconnectionAttempts?: number` : how many reconnect attempts
   * `connectionCallback?: (error) => {}` : optional, callback that called after the first init message, with the error (if there is one)
 
 ### `subscribe(subscription)`
 - `subscription: Object` : the required fields for a subscription
-  * `id: string` : id to register the subscription under
   * `query: string` : GraphQL subscription
-  * `variables?: Object` : GraphQL subscription variables
+  * `variables?: Object` : GraphQL subscription variables, requires `channel` value to be set to denote the channel to listen to.
   * `success: function` : The action creator to be dispatched when the subscription response contains no errors
   * `failure: function` : The action creator to be dispatched when the subscription response does contain errors
 
 ### `unsubscribe(id)`
-- `id: string` : id of the subscription to unsubscribe
+- `channel: string` : channel to unsubscribe from
