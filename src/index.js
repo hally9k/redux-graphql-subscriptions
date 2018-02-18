@@ -9,9 +9,9 @@ export const subscribe = subscription => ({
 
 const UNSUBSCRIBE = 'redux-graphql-subscriptions/UNSUBSCRIBE'
 
-export const unsubscribe = subscriptionName => ({
+export const unsubscribe = channel => ({
   type: UNSUBSCRIBE,
-  payload: subscriptionName,
+  payload: channel,
 })
 
 const refs = {}
@@ -29,7 +29,7 @@ export default function createGraphQLSubscriptionsMiddleware(url, options) {
       wsSubscribe(wsClient, dispatch, action.payload)
     }
     if (type === UNSUBSCRIBE) {
-      const { payload: { variables: { channel } } } = action
+      const { payload: channel } = action
       refs[channel] >= 1 ? refs[channel]-- : (refs[channel] = null)
       if (refs[channel] <= 0) {
         wsUnsubscribe(wsClient, action.payload)
@@ -43,11 +43,17 @@ const wsSubscribe = (
   client,
   dispatch,
   { query, variables, success, failure },
-) =>
-  client.subscribe(
-    { query, variables },
-    (error, res) =>
-      error ? dispatch(failure(error)) : dispatch(success(res[channel])),
+) => {
+  const obs = client.request({ query, variables })
+  obs.subscribe(
+    // next, error, complete
+    res => {
+      dispatch(success(res))
+    },
+    error => {
+      dispatch(failure(error))
+    },
   )
+}
 
 const wsUnsubscribe = (client, channel) => client.unsubscribe(channel)
