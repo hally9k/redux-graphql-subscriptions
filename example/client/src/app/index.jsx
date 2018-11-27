@@ -8,6 +8,7 @@ export default function App(): React.Node {
         <div>
             <Time />
             <br />
+            <hr />
             <Color />
         </div>
     )

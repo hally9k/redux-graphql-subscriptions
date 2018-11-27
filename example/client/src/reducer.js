@@ -1,7 +1,8 @@
 // @flow
 
 export type AppState = {
-    time: number
+    time: number,
+    color: string
 }
 
 const TIME_EVENT_RECEIVED: string = 'example-app/TIME_EVENT_RECEIVED'
@@ -45,9 +46,9 @@ const INITIAL_STATE: AppState = { time: 0, color: '#AFAFAF' }
 
 export default function(
     state: AppState = INITIAL_STATE,
-    action: ReduxAction<number> & ReduxAction<string>
+    action: ReduxAction<number & string>
 ): AppState {
-    const { type, payload }: ReduxAction<number> & ReduxAction<string> = action
+    const { type, payload }: ReduxAction<number & string> = action
 
     switch (type) {
         case TIME_EVENT_RECEIVED:

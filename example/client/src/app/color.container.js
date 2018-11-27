@@ -1,8 +1,8 @@
 // @flow
 import type { ComponentType } from 'react'
 import { connect } from 'react-redux'
-import { type AppState, colorEventReceived, failure } from '../reducer'
 import App, { type StateProps, type DispatchProps, type Props } from './color'
+import { type AppState, colorEventReceived, failure } from '../reducer'
 import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
 
 export type SubscriptionPayload = {

@@ -20,7 +20,7 @@ export default function Color(props: Props): React.Node {
     // $FlowTODO
     React.useEffect(() => {
         // $FlowTODO
-        root.style.setProperty('--random-color', color || '#AFAFAF')
+        root.style.setProperty('--random-color', color)
     })
 
     return (

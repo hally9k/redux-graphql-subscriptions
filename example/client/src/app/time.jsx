@@ -18,7 +18,8 @@ export default function Time(props: Props): React.Node {
 
     return (
         <div>
-            <h3>{time ? format(time, 'H:mm:ss A') : 'What\'s the time?'}</h3>
+            <h3>What is the time?</h3>
+            <h3>{time ? format(time, 'H:mm:ss A') : '?'}</h3>
             <button onClick={subscribe}>Subscribe</button>
             <button onClick={unsubscribe}>Unubscribe</button>
         </div>

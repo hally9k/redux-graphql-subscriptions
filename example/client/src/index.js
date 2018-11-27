@@ -24,7 +24,7 @@ const enhancer: * = composeWithDevTools(
     )
 )
 
-const store = createStore(reducer, { time: 0 }, enhancer)
+const store = createStore(reducer, enhancer)
 
 const rootElement: HTMLElement =
     document.getElementById('root') || document.getElementsByTagName('BODY')[0]
