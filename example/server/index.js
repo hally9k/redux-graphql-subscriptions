@@ -7,13 +7,6 @@ import { SubscriptionServer } from "subscriptions-transport-ws";
 import { execute, subscribe } from "graphql";
 
 import schema from "./schema/index.js";
-import redis from "./connector/redis.js";
-import { time } from "./model/index.js";
-
-const context = {
-  redis,
-  time
-};
 
 const DEFAULT_PORT = 8081;
 
@@ -29,7 +22,6 @@ server.use(
     graphqlHTTP({
       schema,
       graphiql: true,
-      context,
       subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`,
       formatError: error => ({
         message: error.message,
@@ -48,10 +40,7 @@ ws.listen(PORT, () => {
     {
       execute,
       subscribe,
-      schema,
-      onConnect: () => {
-        return context;
-      }
+      schema
     },
     {
       server: ws,
