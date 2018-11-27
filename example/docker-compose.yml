@@ -4,14 +4,12 @@ services:
     image: redis
     ports:
       - "6379:6379"
-  # server:
-  #   build: ./server
-  #   volumes:
-  #     - "./server:/usr/src/engage"
-  #   ports:
-  #     - "8081:8081"
-  #     - "9201:9201"
-  #   depends_on:
-  #     - "redis"
-  #   restart: unless-stopped
-  #   command: ./node_modules/.bin/nodemon --exec ./node_modules/.bin/babel-node --inspect=0.0.0.0:9201 index.js
+  server:
+    build: ./server
+    ports:
+      - "8081:8081"
+      - "9201:9201"
+    depends_on:
+      - "redis"
+    restart: unless-stopped
+    command: yarn start

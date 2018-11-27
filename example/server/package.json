@@ -1,10 +1,9 @@
 {
-  "name": "example",
+  "name": "example-server",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@babel/cli": "^7.1.5",
     "graphql": "^14.0.2",
     "graphql-subscriptions": "^1.0.0",
     "http": "^0.0.0",
@@ -17,22 +16,16 @@
     "subscriptions-transport-ws": "^0.9.15"
   },
   "devDependencies": {
+    "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
     "@babel/node": "^7.0.0",
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-es2015": "^7.0.0-beta.53",
     "@babel/preset-flow": "^7.0.0",
-    "eslint": "^5.9.0",
-    "eslint-plugin-babel": "^5.3.0",
-    "eslint-plugin-compat": "^2.6.3",
-    "eslint-plugin-filenames": "^1.3.2",
-    "eslint-plugin-flowtype": "^3.2.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1"
+    "nodemon": "^1.18.6"
   },
   "scripts": {
-    "start": "nodemon --exec ./node_modules/.bin/babel-node server/index.js",
-    "debug": "ndb ./node_modules/.bin/babel-node server/index.js"
+    "start": "babel-node ./index.js",
+    "debug": "ndb ./node_modules/.bin/babel-node ./index.js"
   }
 }

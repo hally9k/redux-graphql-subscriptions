@@ -1,7 +1,7 @@
 import redis from "redis";
 
 const config = {
-  host: "localhost",
+  host: "redis",
   port: 6379
 };
 
