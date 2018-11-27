@@ -1,0 +1,13 @@
+// @flow
+declare type GraphQLAST = {|
+  definitions: Array<{}>,
+  kind: string,
+  loc: {}
+|};
+
+declare type GraphQLError = {
+  id?: string,
+  message: string,
+  request?: *,
+  type: string
+};

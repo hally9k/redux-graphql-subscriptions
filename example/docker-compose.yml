@@ -6,6 +6,8 @@ services:
       - "6379:6379"
   server:
     build: ./server
+    volumes:
+      - ./server:/app/
     ports:
       - "8081:8081"
       - "9201:9201"

@@ -1,5 +1,13 @@
 // @flow
 import { SubscriptionClient } from "subscriptions-transport-ws";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+export type SubscriptionPayload = {
+  query: GraphQLAST,
+  variables: {},
+  success: ReduxAction<*>,
+  failure: ReduxAction<*>
+};
 
 const SUBSCRIBE = "redux-graphql-subscriptions/SUBSCRIBE";
 
@@ -10,14 +18,18 @@ export const subscribe: * = (subscription: *): ReduxAction<*> => ({
 
 const UNSUBSCRIBE = "redux-graphql-subscriptions/UNSUBSCRIBE";
 
-export const unsubscribe: * = (subscriptionName: *): ReduxAction<*> => ({
+export const unsubscribe: * = (
+  subscriptionName: string
+): ReduxAction<string> => ({
   type: UNSUBSCRIBE,
   payload: subscriptionName
 });
 
 const refs = {};
 
-export default function <AppState>createGraphQLSubscriptionsMiddleware(
+const unsubscribeFns = {};
+
+export default function createGraphQLSubscriptionsMiddleware<AppState>(
   url: string,
   options: *
 ): ReduxMiddleware<AppState, ReduxAction<*>, ReduxAction<*>> {
@@ -32,19 +44,15 @@ export default function <AppState>createGraphQLSubscriptionsMiddleware(
           variables: { channel }
         }
       } = action;
-      refs[channel] ? refs[channel]++ : (refs[channel] = 1);
-      console.log(refs);
-      wsSubscribe(wsClient, dispatch, action.payload);
+
+      const { unsubscribe } = wsSubscribe(wsClient, dispatch, action.payload);
+      unsubscribeFns[channel] = unsubscribe;
     }
     if (type === UNSUBSCRIBE) {
-      const {
-        payload: {
-          variables: { channel }
-        }
-      } = action;
-      refs[channel] >= 1 ? refs[channel]-- : (refs[channel] = null);
-      if (refs[channel] <= 0) {
-        wsUnsubscribe(wsClient, action.payload);
+      const { payload: channel } = action;
+
+      if (unsubscribeFns[channel]) {
+        unsubscribeFns[channel]();
       }
     }
     return next(action);
@@ -55,9 +63,9 @@ const wsSubscribe = (
   client,
   dispatch,
   { query, variables, success, failure }
-) =>
-  client.subscribe({ query, variables: { channel } }, (error, res) =>
-    error ? dispatch(failure(error)) : dispatch(success(res[channel]))
-  );
-
-const wsUnsubscribe = (client, channel) => client.unsubscribe(channel);
+) => {
+  return client.request({ query, variables }).subscribe({
+    next: res =>
+      res.error ? dispatch(failure(res.error)) : dispatch(success(res))
+  });
+};

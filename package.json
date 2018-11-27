@@ -2,20 +2,27 @@
   "name": "redux-graphql-subscriptions",
   "version": "0.0.5",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "directories": {
     "test": "tests"
   },
   "dependencies": {
     "graphql": "14.0.2",
+    "rxjs": "^6.3.3",
     "subscriptions-transport-ws": "0.9.15"
   },
   "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-flow": "^7.0.0",
     "flow-bin": "^0.86.0",
     "flow-typed": "^2.5.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "mkdir -p dist && babel src/index.js --out-file dist/index.js --source-maps"
   },
   "peerDependencies": {
     "redux": ">= 3.7.0"

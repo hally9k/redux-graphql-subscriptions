@@ -20,12 +20,10 @@
     "@babel/core": "^7.1.6",
     "@babel/node": "^7.0.0",
     "@babel/preset-env": "^7.1.6",
-    "@babel/preset-es2015": "^7.0.0-beta.53",
     "@babel/preset-flow": "^7.0.0",
     "nodemon": "^1.18.6"
   },
   "scripts": {
-    "start": "babel-node ./index.js",
-    "debug": "ndb ./node_modules/.bin/babel-node ./index.js"
+    "start": "nodemon --exec ./node_modules/.bin/babel-node --inspect=0.0.0.0:9201 ./index.js"
   }
 }
