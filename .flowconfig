@@ -1,0 +1,12 @@
+[ignore]
+
+[include]
+
+[libs]
+flow-declaration
+
+[lints]
+
+[options]
+
+[strict]

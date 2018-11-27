@@ -1,0 +1,21 @@
+type DispatchAPI<A> = (action: A) => A;
+type Dispatch<A: { type: $Subtype<string> }> = DispatchAPI<A>;
+
+type MiddlewareAPI<S, A, D = Dispatch<A>> = {
+  dispatch: D,
+  getState(): S
+};
+
+declare type ReduxMiddleware<
+  S,
+  IA,
+  OA = IA,
+  ID = Dispatch<IA>,
+  OD = Dispatch<OA>
+> = (api: MiddlewareAPI<S, OA>) => (next: ID) => ID;
+
+declare type ReduxAction<P = {}, M = {}> = {
+  meta?: M,
+  payload: P,
+  type: string
+};
