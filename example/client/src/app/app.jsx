@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react'
+import format from 'date-fns/format'
 
 export type StateProps = {
     time: number
@@ -17,7 +18,11 @@ function App(props: Props): React.Node {
 
     return (
         <div>
-            <h3>{time}</h3>
+            <h3>
+                {time
+                    ? format(time, 'H:mm:ss A')
+                    : 'Subscribe to get time updates...'}
+            </h3>
             <button onClick={subscribe}>Subscribe</button>
             <button onClick={unsubscribe}>Unubscribe</button>
         </div>

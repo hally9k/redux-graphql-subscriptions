@@ -12,7 +12,13 @@ import {
   GraphQLString
 } from "graphql";
 
-const SUBSCRIPTION_CHANNEL = "time";
+let SUBSCRIPTION_CHANNEL = "_";
+
+setInterval(() => {
+  pubsub.publish(SUBSCRIPTION_CHANNEL, {
+    [SUBSCRIPTION_CHANNEL]: Date.now()
+  });
+}, 1000);
 
 const schema = new GraphQLSchema({
   subscription: new GraphQLObjectType({
@@ -24,12 +30,7 @@ const schema = new GraphQLSchema({
           channel: { type: new GraphQLNonNull(GraphQLString) }
         },
         subscribe: (_, { channel }, { redis }) => {
-          setInterval(() => {
-            pubsub.publish(channel, {
-              [channel]: Date.now()
-            });
-          }, 1000);
-
+          SUBSCRIPTION_CHANNEL = channel;
           return pubsub.asyncIterator(channel);
         }
       }

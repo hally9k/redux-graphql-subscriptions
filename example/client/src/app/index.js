@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { type AppState, timeEventReceived, failure } from '../reducer'
 import App, { type StateProps, type DispatchProps, type Props } from './app'
 import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
-// import gql from 'graphql-tag'
 
 export type SubscriptionPayload = {
     query: string,
@@ -22,9 +21,10 @@ const query: string = `
         time(channel: $channel)
     }
 `
+const PUB_SUB_CHANNEL: string = 'time'
 
 const variables = {
-    channel: 'time'
+    channel: PUB_SUB_CHANNEL
 }
 
 const subscription: SubscriptionPayload = {
@@ -36,7 +36,7 @@ const subscription: SubscriptionPayload = {
 
 const mapDispatchToProps: * = (dispatch: *): DispatchProps => ({
     subscribe: (): ReduxAction<*> => dispatch(subscribe(subscription)),
-    unsubscribe: (): ReduxAction<*> => dispatch(unsubscribe('time'))
+    unsubscribe: (): ReduxAction<*> => dispatch(unsubscribe(PUB_SUB_CHANNEL))
 })
 const connectApp: (ComponentType<Props>) => ComponentType<{}> = connect(
     mapStateToProps,
