@@ -13,20 +13,14 @@ export type DispatchProps = {
 
 export type Props = StateProps & DispatchProps
 
-function App(props: Props): React.Node {
+export default function Time(props: Props): React.Node {
     const { time, subscribe, unsubscribe }: Props = props
 
     return (
         <div>
-            <h3>
-                {time
-                    ? format(time, 'H:mm:ss A')
-                    : 'Subscribe to get time updates...'}
-            </h3>
+            <h3>{time ? format(time, 'H:mm:ss A') : 'What\'s the time?'}</h3>
             <button onClick={subscribe}>Subscribe</button>
             <button onClick={unsubscribe}>Unubscribe</button>
         </div>
     )
 }
-
-export default App

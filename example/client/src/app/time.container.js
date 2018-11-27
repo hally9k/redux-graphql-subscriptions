@@ -2,7 +2,7 @@
 import type { ComponentType } from 'react'
 import { connect } from 'react-redux'
 import { type AppState, timeEventReceived, failure } from '../reducer'
-import App, { type StateProps, type DispatchProps, type Props } from './app'
+import App, { type StateProps, type DispatchProps, type Props } from './time'
 import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
 
 export type SubscriptionPayload = {
