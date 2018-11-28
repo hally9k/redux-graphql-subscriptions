@@ -16,6 +16,6 @@ declare type ReduxMiddleware<
 
 declare type ReduxAction<P = {}, M = {}> = {
   meta?: M,
-  payload: P,
+  payload?: P,
   type: string
 };

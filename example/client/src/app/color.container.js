@@ -2,15 +2,17 @@
 import type { ComponentType } from 'react'
 import { connect } from 'react-redux'
 import App, { type StateProps, type DispatchProps, type Props } from './color'
-import { type AppState, colorEventReceived, failure } from '../reducer'
-import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
-
-export type SubscriptionPayload = {
-    query: string,
-    variables: {},
-    success: (_: *) => ReduxAction<*>,
-    failure: (_: *) => ReduxAction<*>
-}
+import {
+    type AppState,
+    colorEventReceived,
+    failure,
+    colorUnsubscribed
+} from '../reducer'
+import {
+    subscribe,
+    unsubscribe,
+    type SubscriptionPayload
+} from 'redux-graphql-subscriptions'
 
 const mapStateToProps: * = (state: AppState): StateProps => ({
     color: state.color
@@ -30,8 +32,9 @@ const variables = {
 const subscription: SubscriptionPayload = {
     query,
     variables,
-    success: colorEventReceived,
-    failure
+    onMessage: colorEventReceived,
+    onError: failure,
+    onUnsubscribe: colorUnsubscribed
 }
 
 const mapDispatchToProps: * = (dispatch: *): DispatchProps => ({

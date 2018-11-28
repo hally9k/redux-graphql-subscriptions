@@ -11,7 +11,10 @@ import { createLogger } from 'redux-logger'
 
 const subscriptionsUrl: string = 'ws://localhost:8081/subscriptions'
 const subscriptionOptions: * = {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+        token: '^$%%$@^%^O*^&UE$%#T%Y'
+    }
 }
 
 const enhancer: * = composeWithDevTools(

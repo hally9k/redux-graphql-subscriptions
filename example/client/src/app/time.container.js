@@ -1,16 +1,18 @@
 // @flow
 import type { ComponentType } from 'react'
 import { connect } from 'react-redux'
-import { type AppState, timeEventReceived, failure } from '../reducer'
+import {
+    type AppState,
+    timeEventReceived,
+    failure,
+    timeUnsubscribed
+} from '../reducer'
 import App, { type StateProps, type DispatchProps, type Props } from './time'
-import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
-
-export type SubscriptionPayload = {
-    query: string,
-    variables: {},
-    success: (_: *) => ReduxAction<*>,
-    failure: (_: *) => ReduxAction<*>
-}
+import {
+    subscribe,
+    unsubscribe,
+    type SubscriptionPayload
+} from 'redux-graphql-subscriptions'
 
 const mapStateToProps: * = (state: AppState): StateProps => ({
     time: state.time
@@ -30,8 +32,9 @@ const variables = {
 const subscription: SubscriptionPayload = {
     query,
     variables,
-    success: timeEventReceived,
-    failure
+    onMessage: timeEventReceived,
+    onError: failure,
+    onUnsubscribe: timeUnsubscribed
 }
 
 const mapDispatchToProps: * = (dispatch: *): DispatchProps => ({

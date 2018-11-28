@@ -1,5 +1,8 @@
+
 :root {
-    --random-color: #AEAEAE;
+    /* stylelint-disable color-no-hex */
+    --random-color: #AEAEAE; 
+    /* stylelint-enable */
 }
 
 body {

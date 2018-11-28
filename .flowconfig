@@ -10,4 +10,7 @@ flow-declaration
 [options]
 suppress_comment= \\(.\\|\n\\)*\\$FlowTODO
 
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=example
+
 [strict]

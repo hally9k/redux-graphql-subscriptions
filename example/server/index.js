@@ -40,7 +40,10 @@ ws.listen(PORT, () => {
     {
       execute,
       subscribe,
-      schema
+      schema,
+      onConnect: x => {
+        console.log(x);
+      }
     },
     {
       server: ws,

@@ -29,10 +29,11 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "flow-bin": "^0.86.0"
+    "flow-bin": "^0.87.0"
   },
   "scripts": {
-    "start": "nodemon --exec ./node_modules/.bin/babel-node server/index.js",
-    "debug": "ndb ./node_modules/.bin/babel-node server/index.js"
+    "start": "docker-compose up -d; sleep 5; $(cd ./client && yarn start)",
+    "stop": "docker-compose down",
+    "type-check": "flow"
   }
 }

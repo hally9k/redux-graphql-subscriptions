@@ -2,12 +2,7 @@
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-export type SubscriptionPayload = {
-  query: GraphQLAST,
-  variables: {},
-  success: ReduxAction<*>,
-  failure: ReduxAction<*>
-};
+import { type SubscriptionPayload } from "./";
 
 const SUBSCRIBE = "redux-graphql-subscriptions/SUBSCRIBE";
 
@@ -25,9 +20,7 @@ export const unsubscribe: * = (
   payload: subscriptionName
 });
 
-const refs = {};
-
-const unsubscribeFns = {};
+const currentSubscriptions = {};
 
 export default function createGraphQLSubscriptionsMiddleware<AppState>(
   url: string,
@@ -37,22 +30,27 @@ export default function createGraphQLSubscriptionsMiddleware<AppState>(
 
   return ({ dispatch }) => next => action => {
     const { type } = action;
-
     if (type === SUBSCRIBE) {
+      const payload: SubscriptionPayload = (action.payload: any);
       const {
-        payload: {
-          variables: { channel }
-        }
-      } = action;
+        variables: { channel },
+        onUnsubscribe
+      } = payload;
 
-      const { unsubscribe } = wsSubscribe(wsClient, dispatch, action.payload);
-      unsubscribeFns[channel] = unsubscribe;
+      if (!currentSubscriptions[channel]) {
+        const { unsubscribe } = wsSubscribe(wsClient, dispatch, payload);
+        currentSubscriptions[channel] = () => {
+          unsubscribe();
+          dispatch(onUnsubscribe());
+        };
+      }
     }
     if (type === UNSUBSCRIBE) {
-      const { payload: channel } = action;
+      const channel: string = (action.payload: any);
 
-      if (unsubscribeFns[channel]) {
-        unsubscribeFns[channel]();
+      if (currentSubscriptions[channel]) {
+        currentSubscriptions[channel]();
+        currentSubscriptions[channel] = null;
       }
     }
     return next(action);
@@ -62,10 +60,10 @@ export default function createGraphQLSubscriptionsMiddleware<AppState>(
 const wsSubscribe = (
   client,
   dispatch,
-  { query, variables, success, failure }
+  { query, variables, onMessage, onError }
 ) => {
   return client.request({ query, variables }).subscribe({
     next: res =>
-      res.error ? dispatch(failure(res.error)) : dispatch(success(res))
+      res.error ? dispatch(onError(res.error)) : dispatch(onMessage(res))
   });
 };
