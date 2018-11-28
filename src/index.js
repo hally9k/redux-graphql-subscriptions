@@ -20,7 +20,7 @@ export const unsubscribe: * = (
 
 const currentSubscriptions = {}
 
-export default function createGraphQLSubscriptionsMiddleware<AppState>(
+export function createMiddleware<AppState>(
     url: string,
     options: *
 ): ReduxMiddleware<AppState, ReduxAction<*>, ReduxAction<*>> {
