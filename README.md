@@ -2,19 +2,19 @@
 
 A Redux middleware for handling GraphQL subscriptions.
 
-This repo leverages [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws) which is the awesome work of the Apollo guys [over here](https://github.com/apollographql) and is intended to be coupled with a backend server that also uses subscriptions-transport-ws.
+This repo leverages [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws) which is the awesome work of the Apollo guys [over here](https://github.com/apollographql) and is intended to be coupled with a backend server that also uses subscriptions-transport-ws or conforms to the [same protocol](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md).
 
 This is totally work in progress so all comment, critique and help welcomed!
 
 ## Getting Started
 
-- Import the package `npm install --save redux-graphql-subscriptions`
+- Import the package `yarn add redux-graphql-subscriptions`
 - Instantiate the middleware, passing in the url of your websocket server.
 - Pass the middleware instance into your redux store.
 
 ```
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import reducers from 'ducks'
+import reducers from 'reducers'
 import createGraphQLSubscriptionsMiddleware from 'redux-graphql-subscriptions'
 
 const graphQLSubscriptionsMiddleware = createGraphQLSubscriptionsMiddleware('ws://localhost:8001/subscriptions')
@@ -37,23 +37,13 @@ export const unsubscribeFromNewComments = () => unsubscribe('one')
 // Subscription object
 const newComment = {
     query: newCommentSubscription,
-    success: receivedNewComment,
-    failure: receivedNewCommentWithErrors,
+    onMessage: receivedNewComment,
+    onError: receivedNewCommentWithErrors,
+    onUnsubscribe: threadClosed
 }
 ```
 
-- You can use those action creators in your lifecycle hooks to subscribe and unsubscribe from subscriptions that a component is dependent upon like this...
-
-```
-    componentWillMount() {
-        this.props.subscribeToNewComments()
-        this.props.fetchingCommentHistory()
-    }
-
-    componentWillUnmount() {
-        this.props.unsubscribeFromNewComments()
-    }
-```
+Clone the repo and boot up the working example to see how to integrate it into your app.
 
 ## API
 
@@ -73,8 +63,9 @@ const newComment = {
 - `subscription: Object` : the required fields for a subscription
   - `query: string` : GraphQL subscription
   - `variables?: Object` : GraphQL subscription variables, requires `channel` value to be set to denote the channel to listen to.
-  - `success: function` : The action creator to be dispatched when the subscription response contains no errors
-  - `failure: function` : The action creator to be dispatched when the subscription response does contain errors
+  - `onMessage: function` : The action creator to be dispatched when the subscription response contains no errors
+  - `onError: function` : The action creator to be dispatched when the subscription response does contain errors
+  - `onUnsubscribe: function` : The action creator to be dispatched when the client unsubscribes
 
 ### `unsubscribe(id)`
 
