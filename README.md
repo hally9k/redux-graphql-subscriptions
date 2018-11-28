@@ -69,7 +69,7 @@ Once you have the app running make a subscription and test the automatic reconne
 
 ## API
 
-### `createGraphQLSubscriptionsMiddleware(url, options)`
+### `createMiddleware(url, options)`
 
 - `url: string` : url that the client will connect to, starts with `ws://` or `wss://`
 - `options?: Object` : optional, object to modify default client behavior
@@ -85,10 +85,10 @@ Once you have the app running make a subscription and test the automatic reconne
 - `subscription: Object` : the required fields for a subscription
   - `query: string` : GraphQL subscription
   - `variables?: Object` : GraphQL subscription variables, requires `channel` value to be set to denote the channel to listen to.
-  - `onMessage: function` : The action creator to be dispatched when the subscription response contains no errors
-  - `onError: function` : The action creator to be dispatched when the subscription response does contain errors
-  - `onUnsubscribe: function` : The action creator to be dispatched when the client unsubscribes
+  - `onMessage: function` : The action creator to be dispatched when a message is received without any errors
+  - `onError: function` : The action creator to be dispatched when a message is received that does contain errors
+  - `onUnsubscribe: function` : The action creator to be dispatched when the client unsubscribes form a subscription
 
-### `unsubscribe(id)`
+### `unsubscribe(channel)`
 
 - `channel: string` : channel to unsubscribe from
