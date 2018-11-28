@@ -62,6 +62,8 @@ Run the client:
 - `yarn link "redux-graphql-subscriptions"`
 - `yarn start`
 
+Once you have the app running make a subscription and test the automatic reconnections by killing and standing up the server.
+
 ## API
 
 ### `createGraphQLSubscriptionsMiddleware(url, options)`
