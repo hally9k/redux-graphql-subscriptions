@@ -1,35 +1,24 @@
-// @flow
-import type { ComponentType } from 'react'
 import { connect } from 'react-redux'
-import App, { type StateProps, type DispatchProps, type Props } from './color'
-import {
-    type AppState,
-    colorEventReceived,
-    failure,
-    colorUnsubscribed
-} from '../reducer'
-import {
-    subscribe,
-    unsubscribe,
-    type SubscriptionPayload
-} from 'redux-graphql-subscriptions'
+import App from './color'
+import { colorEventReceived, failure, colorUnsubscribed } from '../reducer'
+import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
 
-const mapStateToProps: * = (state: AppState): StateProps => ({
+const mapStateToProps = state => ({
     color: state.color
 })
 
-const query: string = `
+const query = `
     subscription Color($channel: String!) {
         color(channel: $channel)
     }
 `
-const PUB_SUB_CHANNEL: string = 'color'
+const PUB_SUB_CHANNEL = 'color'
 
 const variables = {
     channel: PUB_SUB_CHANNEL
 }
 
-const subscription: SubscriptionPayload = {
+const subscription = {
     query,
     variables,
     onMessage: colorEventReceived,
@@ -37,13 +26,12 @@ const subscription: SubscriptionPayload = {
     onUnsubscribe: colorUnsubscribed
 }
 
-const mapDispatchToProps: * = (dispatch: *): DispatchProps => ({
-    subscribe: (): ReduxAction<*> => dispatch(subscribe(subscription)),
-    unsubscribe: (): ReduxAction<*> => dispatch(unsubscribe(PUB_SUB_CHANNEL))
+const mapDispatchToProps = dispatch => ({
+    subscribe: () => dispatch(subscribe(subscription)),
+    unsubscribe: () => dispatch(unsubscribe(PUB_SUB_CHANNEL))
 })
-const connectApp: (ComponentType<Props>) => ComponentType<{}> = connect(
+
+export default connect(
     mapStateToProps,
     mapDispatchToProps
-)
-
-export default connectApp(App)
+)(App)

@@ -1,31 +1,30 @@
-// @flow
-import { PubSub } from "graphql-subscriptions";
-export const pubsub = new PubSub();
+import { PubSub } from 'graphql-subscriptions'
+export const pubsub = new PubSub()
 
-import { GraphQLFloat, GraphQLObjectType, GraphQLSchema } from "graphql";
+import { GraphQLFloat, GraphQLObjectType, GraphQLSchema } from 'graphql'
 
-import { color } from "./color";
-import { time } from "./time";
+import { color } from './color'
+import { time } from './time'
 
 const schema = new GraphQLSchema({
-  subscription: new GraphQLObjectType({
-    name: "RootSubscriptionType",
-    fields: {
-      time: time(pubsub),
-      color: color(pubsub)
-    }
-  }),
-  query: new GraphQLObjectType({
-    name: "RootQueryType",
-    fields: {
-      time: {
-        type: GraphQLFloat,
-        resolve: (_, __, ctx) => {
-          return Date.now();
+    subscription: new GraphQLObjectType({
+        name: 'RootSubscriptionType',
+        fields: {
+            time: time(pubsub),
+            color: color(pubsub)
         }
-      }
-    }
-  })
-});
+    }),
+    query: new GraphQLObjectType({
+        name: 'RootQueryType',
+        fields: {
+            time: {
+                type: GraphQLFloat,
+                resolve: (_, __, ctx) => {
+                    return Date.now()
+                }
+            }
+        }
+    })
+})
 
-export default schema;
+export default schema

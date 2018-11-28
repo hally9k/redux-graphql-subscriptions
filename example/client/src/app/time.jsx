@@ -1,20 +1,8 @@
-// @flow
 import * as React from 'react'
 import format from 'date-fns/format'
 
-export type StateProps = {
-    time: number
-}
-
-export type DispatchProps = {
-    subscribe: *,
-    unsubscribe: *
-}
-
-export type Props = StateProps & DispatchProps
-
-export default function Time(props: Props): React.Node {
-    const { time, subscribe, unsubscribe }: Props = props
+export default function Time(props) {
+    const { time, subscribe, unsubscribe } = props
 
     return (
         <div>

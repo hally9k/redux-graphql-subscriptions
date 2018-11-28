@@ -1,53 +1,28 @@
-// @flow
+const TIME_EVENT_RECEIVED = 'example-app/TIME_EVENT_RECEIVED'
+const TIME_UNSUBSCRIBED = 'example-app/TIME_UNSUBSCRIBED'
+const COLOR_EVENT_RECEIVED = 'example-app/COLOR_EVENT_RECEIVED'
+const COLOR_UNSUBSCRIBED = 'example-app/COLOR_UNSUBSCRIBED'
+const FAILURE = 'example-app/FAILURE'
 
-export type AppState = {
-    time: number,
-    color: string
-}
-
-const TIME_EVENT_RECEIVED: string = 'example-app/TIME_EVENT_RECEIVED'
-const TIME_UNSUBSCRIBED: string = 'example-app/TIME_UNSUBSCRIBED'
-const COLOR_EVENT_RECEIVED: string = 'example-app/COLOR_EVENT_RECEIVED'
-const COLOR_UNSUBSCRIBED: string = 'example-app/COLOR_UNSUBSCRIBED'
-const FAILURE: string = 'example-app/FAILURE'
-
-type TimeEventPayload = {
-    data: {
-        time: number
-    }
-}
-
-type ColorEventPayload = {
-    data: {
-        color: string
-    }
-}
-
-export const timeEventReceived: * = (
-    payload: TimeEventPayload
-): ReduxAction<number> => ({
+export const timeEventReceived = payload => ({
     type: TIME_EVENT_RECEIVED,
     payload: payload.data.time
 })
 
-export const timeUnsubscribed: * = (): ReduxAction<*> => ({
+export const timeUnsubscribed = () => ({
     type: TIME_UNSUBSCRIBED
 })
 
-export const colorEventReceived: * = (
-    payload: ColorEventPayload
-): ReduxAction<string> => ({
+export const colorEventReceived = payload => ({
     type: COLOR_EVENT_RECEIVED,
     payload: payload.data.color
 })
 
-export const colorUnsubscribed: * = (): ReduxAction<*> => ({
+export const colorUnsubscribed = () => ({
     type: COLOR_UNSUBSCRIBED
 })
 
-export const failure: * = (
-    payload: GraphQLError
-): ReduxAction<GraphQLError> => ({
+export const failure = payload => ({
     type: FAILURE,
     payload
 })
@@ -55,13 +30,10 @@ export const failure: * = (
 const DEFAULT_TIME = 0
 const DEFAULT_COLOR = '#AFAFAF'
 
-const INITIAL_STATE: AppState = { time: DEFAULT_TIME, color: DEFAULT_COLOR }
+const INITIAL_STATE = { time: DEFAULT_TIME, color: DEFAULT_COLOR }
 
-export default function(
-    state: AppState = INITIAL_STATE,
-    action: ReduxAction<number & string>
-): AppState {
-    const { type, payload }: ReduxAction<number & string> = action
+export default function(state = INITIAL_STATE, action) {
+    const { type, payload } = action
 
     switch (type) {
         case TIME_EVENT_RECEIVED:
