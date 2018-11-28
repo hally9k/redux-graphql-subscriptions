@@ -15,9 +15,9 @@ This is totally work in progress so all comment, critique and help welcomed!
 ```
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import reducers from 'reducers'
-import createGraphQLSubscriptionsMiddleware from 'redux-graphql-subscriptions'
+import { createMiddleware } from 'redux-graphql-subscriptions'
 
-const graphQLSubscriptionsMiddleware = createGraphQLSubscriptionsMiddleware('ws://localhost:8001/subscriptions')
+const graphQLSubscriptionsMiddleware = createMiddleware('ws://localhost:8001/subscriptions', { reconnect: true })
 
 let todoApp = combineReducers(reducers)
 let store = createStore(
