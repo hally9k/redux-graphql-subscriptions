@@ -89,6 +89,6 @@ Once you have the app running make a subscription and test the automatic reconne
   - `onError: function` : The action creator to be dispatched when the subscription response does contain errors
   - `onUnsubscribe: function` : The action creator to be dispatched when the client unsubscribes
 
-### `unsubscribe(id)`
+### `unsubscribe(channel)`
 
 - `channel: string` : channel to unsubscribe from
