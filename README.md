@@ -43,7 +43,24 @@ const newComment = {
 }
 ```
 
-Clone the repo and boot up the working example to see how to integrate it into your app.
+## Working Example
+
+Clone the repo and boot up the working example to see how to integrate it into your app:
+
+- `git clone git@github.com:hally9k/redux-graphql-subscriptions.git`
+
+Run the server:
+
+- `cd example/server`
+- `yarn start`
+- `cd ../..` _(Back to the root for teh next step)_
+
+Run the client:
+
+- `yarn link`
+- `cd example/client`
+- `yarn link "redux-graphql-subscriptions"`
+- `yarn start`
 
 ## API
 
