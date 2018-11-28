@@ -1,0 +1,27 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/cli": "^7.1.5",
+    "graphql": "^14.0.2",
+    "graphql-subscriptions": "^1.0.0",
+    "http": "^0.0.0",
+    "koa": "^2.6.2",
+    "koa-cors": "^0.0.16",
+    "koa-graphql": "^0.8.0",
+    "koa-mount": "^4.0.0",
+    "subscriptions-transport-ws": "^0.9.15"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-flow": "^7.0.0",
+    "nodemon": "^1.18.7"
+  },
+  "scripts": {
+    "start": "nodemon --exec ./node_modules/.bin/babel-node --inspect=0.0.0.0:9201 ./index.js"
+  }
+}

@@ -1,0 +1,15 @@
+[ignore]
+*./example
+
+[include]
+
+[libs]
+flow-declaration
+
+[lints]
+
+[options]
+suppress_comment= \\(.\\|\n\\)*\\$FlowTODO
+
+
+[strict]

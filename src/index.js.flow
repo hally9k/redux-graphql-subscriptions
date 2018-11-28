@@ -1,0 +1,9 @@
+export type SubscriptionPayload = {
+  query: GraphQLAST,
+  variables: {
+    channel: string
+  },
+  onMessage: (_: *) => ReduxAction<*>,
+  onError: (_: *) => ReduxAction<*>,
+  onUnsubscribe: (_: *) => ReduxAction<*>
+};
