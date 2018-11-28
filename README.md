@@ -52,13 +52,16 @@ Clone the repo and boot up the working example to see how to integrate it into y
 Run the server:
 
 - `cd example/server`
+- `yarn`
 - `yarn start`
-- `cd ../..` _(Back to the root for teh next step)_
+- `cd ../..` _(Back to the root for the next step)_
 
 Run the client:
 
+- `yarn`
 - `yarn link`
 - `cd example/client`
+- `yarn`
 - `yarn link "redux-graphql-subscriptions"`
 - `yarn start`
 
