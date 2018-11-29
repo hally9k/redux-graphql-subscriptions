@@ -1,6 +1,6 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "repository": {
     "type": "git",
@@ -14,10 +14,6 @@
   "author": "Hal Smith Stevens <hally9k@gmail.com> (https://github.com/hally9k)",
   "license": "MIT",
   "main": "dist/index.js",
-  "dependencies": {
-    "graphql": "14.0.2",
-    "subscriptions-transport-ws": "0.9.15"
-  },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
@@ -38,13 +34,17 @@
     "eslint-plugin-react": "^7.1.0",
     "flow-bin": "^0.86.0",
     "flow-typed": "^2.5.1",
-    "jest": "^23.6.0"
+    "graphql": "^14.0.2",
+    "jest": "^23.6.0",
+    "subscriptions-transport-ws": "^0.9.15"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "mkdir -p dist && babel src/index.js --out-file dist/index.js --source-maps && cp src/index.js.flow dist/index.js.flow"
   },
   "peerDependencies": {
-    "redux": ">= 3.7.0"
+    "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.1 || ^14.0.2",
+    "redux": ">=3.7.0",
+    "subscriptions-transport-ws": ">=0.9.15"
   }
 }
