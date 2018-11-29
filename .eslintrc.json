@@ -7,13 +7,14 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "mocha": true
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
+    "plugin:flowtype/recommended",
+    "plugin:jest/recommended",
     "plugin:jsx-a11y/recommended",
-    "plugin:react/recommended",
-    "plugin:flowtype/recommended"
+    "plugin:react/recommended"
   ],
   "parser": "babel-eslint",
   "parserOptions": {
@@ -26,12 +27,12 @@
   },
   "plugins": [
     "babel",
-    "compat",
     "filenames",
+    "flowtype",
     "import",
+    "jest",
     "jsx-a11y",
-    "react",
-    "flowtype"
+    "react"
   ],
   "settings": {
     "flowtype": {
@@ -39,15 +40,36 @@
     }
   },
   "rules": {
-    "compat/compat": "error",
-    "jsx-a11y/anchor-is-valid": ["error"],
-    "jsx-a11y/label-has-for": ["off"],
+    "flowtype/require-parameter-type": "error",
+    "flowtype/require-return-type": "error",
+    "flowtype/require-types-at-top": ["error", "always"],
+    "flowtype/require-valid-file-annotation": "error",
+    "flowtype/require-variable-type": "error",
+    "flowtype/sort-keys": "error",
+    "flowtype/no-dupe-keys": "error",
+    "flowtype/generic-spacing": "off",
+    "jest/no-alias-methods": "off",
+    "jest/no-disabled-tests": "error",
+    "jsx-a11y/anchor-is-valid": "error",
+    "jsx-a11y/label-has-for": [
+      "warn",
+      {
+        "required": {
+          "some": ["nesting", "id"]
+        }
+      }
+    ],
     "react/jsx-boolean-value": ["error", "always"],
-    "react/jsx-handler-names": ["off"],
+    "react/jsx-handler-names": "error",
     "react/jsx-no-comment-textnodes": "error",
-    "react/jsx-no-bind": ["off"],
+    "react/jsx-no-bind": [
+      "warn",
+      {
+        "ignoreRefs": true
+      }
+    ],
     "react/jsx-no-target-blank": "error",
-    "react/jsx-pascal-case": ["error"],
+    "react/jsx-pascal-case": "error",
     "react/no-danger": "off",
     "react/no-find-dom-node": "error",
     "react/no-multi-comp": [
@@ -68,7 +90,7 @@
         ]
       }
     ],
-    "react/sort-prop-types": ["error"],
+    "react/sort-prop-types": "error",
     "react/void-dom-elements-no-children": "error",
     "filenames/match-regex": ["error", "^[a-z-.]+$"],
     "import/named": "error",
@@ -140,34 +162,28 @@
     "padding-line-between-statements": [
       "error",
       { "blankLine": "always", "prev": "*", "next": "return" },
-      {
-        "blankLine": "always",
-        "prev": ["const", "let", "var"],
-        "next": "*"
-      },
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
       {
         "blankLine": "any",
         "prev": ["const", "let", "var"],
         "next": ["const", "let", "var"]
       },
       { "blankLine": "always", "prev": "directive", "next": "*" },
-      { "blankLine": "any", "prev": "directive", "next": "directive" }
+      { "blankLine": "any", "prev": "directive", "next": "directive" },
+      {
+        "blankLine": "never",
+        "prev": "const",
+        "next": "const"
+      }
     ],
-    "switch-colon-spacing": ["error"],
+    "switch-colon-spacing": "error",
     "vars-on-top": "error",
     "wrap-iife": "error",
     "yoda": "error",
-
     "array-bracket-spacing": "error",
     "block-spacing": "error",
-    "brace-style": [
-      "error",
-      "1tbs",
-      {
-        "allowSingleLine": true
-      }
-    ],
-    "camelcase": "off",
+    "brace-style": ["error", "1tbs"],
+    "camelcase": "error",
     "comma-spacing": [
       "error",
       {
@@ -177,6 +193,7 @@
     ],
     "comma-style": "error",
     "computed-property-spacing": "error",
+    "curly": "error",
     "eol-last": "error",
     "func-style": [
       "error",
@@ -257,7 +274,7 @@
     "spaced-comment": ["error", "always"],
     "wrap-regex": "error",
 
-    "arrow-parens": ["off", "always"],
+    "arrow-parens": ["error", "always"],
     "arrow-spacing": [
       "error",
       {
@@ -269,7 +286,7 @@
     "generator-star-spacing": ["error", "after"],
     "jsx-quotes": ["error", "prefer-double"],
     "no-class-assign": "error",
-    "no-confusing-arrow": "off",
+    "no-confusing-arrow": "error",
     "no-const-assign": "error",
     "no-dupe-class-members": "error",
     "no-duplicate-imports": "error",
@@ -278,11 +295,9 @@
     "no-var": "error",
     "prefer-template": "error",
     "sort-imports": [
-      "off",
+      "error",
       {
-        "ignoreCase": true,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["all", "single", "multiple", "none"]
+        "ignoreCase": true
       }
     ],
     "template-curly-spacing": ["error", "never"],

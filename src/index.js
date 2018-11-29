@@ -1,15 +1,17 @@
 // @flow
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { type SubscriptionPayload } from './'
+import { type SubscriptionPayload } from './index.js.flow'
 
-const SUBSCRIBE = 'redux-graphql-subscriptions/SUBSCRIBE'
+const SUBSCRIBE: string = 'redux-graphql-subscriptions/SUBSCRIBE'
 
-export const subscribe: * = (subscription: *): ReduxAction<*> => ({
+export const subscribe: * = (
+    subscription: SubscriptionPayload
+): ReduxAction<SubscriptionPayload> => ({
     type: SUBSCRIBE,
     payload: subscription
 })
 
-const UNSUBSCRIBE = 'redux-graphql-subscriptions/UNSUBSCRIBE'
+const UNSUBSCRIBE: string = 'redux-graphql-subscriptions/UNSUBSCRIBE'
 
 export const unsubscribe: * = (
     subscriptionName: string
@@ -18,38 +20,38 @@ export const unsubscribe: * = (
     payload: subscriptionName
 })
 
-const currentSubscriptions = {}
+export function createMiddleware(url: string, options: *): * {
+    const wsClient: SubscriptionClient = new SubscriptionClient(url, options)
+    const currentSubscriptions: { [string]: (() => void) | null } = {}
 
-export function createMiddleware<AppState>(
-    url: string,
-    options: *
-): ReduxMiddleware<AppState, ReduxAction<*>, ReduxAction<*>> {
-    const wsClient = new SubscriptionClient(url, options)
-
-    return ({ dispatch }) => next => action => {
-        const { type } = action
+    return ({ dispatch }: *): * => (next: *): * => (action: *): * => {
+        const { type }: * = action
 
         if (type === SUBSCRIBE) {
             const payload: SubscriptionPayload = (action.payload: any)
             const {
                 variables: { channel },
                 onUnsubscribe
-            } = payload
+            }: SubscriptionPayload = payload
 
             if (!currentSubscriptions[channel]) {
-                const { unsubscribe } = wsSubscribe(wsClient, dispatch, payload)
+                const { unsubscribe }: * = wsSubscribe(
+                    wsClient,
+                    dispatch,
+                    payload
+                )
 
                 currentSubscriptions[channel] = () => {
                     unsubscribe()
-                    dispatch(onUnsubscribe())
+                    dispatch(onUnsubscribe(channel))
                 }
             }
         }
         if (type === UNSUBSCRIBE) {
             const channel: string = (action.payload: any)
 
-            if (currentSubscriptions[channel]) {
-                currentSubscriptions[channel]()
+            if (typeof currentSubscriptions[channel] === 'function') {
+                (currentSubscriptions[channel]: any)() // Flow struggles with this being narrowed to a function...
                 currentSubscriptions[channel] = null
             }
         }
@@ -58,13 +60,16 @@ export function createMiddleware<AppState>(
     }
 }
 
-const wsSubscribe = (
-    client,
-    dispatch,
-    { query, variables, onMessage, onError }
-) => {
+const wsSubscribe: * = (
+    client: *,
+    dispatch: *,
+    { query, variables, onMessage, onError }: SubscriptionPayload
+): * => {
     return client.request({ query, variables }).subscribe({
-        next: res =>
-            res.error ? dispatch(onError(res.error)) : dispatch(onMessage(res))
+        next: (res: GraphQLResponse): * => {
+            return res.error
+                ? dispatch(onError(res.error))
+                : dispatch(onMessage(res))
+        }
     })
 }

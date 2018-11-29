@@ -1,9 +1,34 @@
+// @flow
 export type SubscriptionPayload = {
-  query: GraphQLAST,
-  variables: {
-    channel: string
-  },
-  onMessage: (_: *) => ReduxAction<*>,
-  onError: (_: *) => ReduxAction<*>,
-  onUnsubscribe: (_: *) => ReduxAction<*>
-};
+    onError: (payload: Array<GraphQLError>) => ReduxAction<Array<GraphQLError>>,
+    onMessage: (payload: GraphQLResponse) => ReduxAction<GraphQLResponse>,
+    onUnsubscribe: (payload: string) => ReduxAction<string>,
+    query: string,
+    variables: {
+        channel: string
+    }
+}
+export type ReduxActionIn =
+    | ReduxAction<SubscriptionPayload>
+    | ReduxAction<string>
+
+export type ReduxActionOut =
+    | ReduxAction<GraphQLResponse>
+    | ReduxAction<Array<GraphQLError>>
+    | ReduxAction<any>
+
+declare function createMiddleware<AppState>(
+    url: string,
+    options: {
+        connectionOptions?: {},
+        reconnect?: boolean
+    }
+): ReduxMiddleware<AppState, ReduxActionIn, ReduxActionOut>
+
+declare function subscribe(
+    payload: SubscriptionPayload
+): ReduxAction<SubscriptionPayload>
+
+declare function unsubscribe(payload: string): ReduxAction<string>
+
+export { createMiddleware, subscribe, unsubscribe }

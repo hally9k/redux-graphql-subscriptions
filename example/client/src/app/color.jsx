@@ -5,9 +5,7 @@ const root = document.querySelector(':root')
 export default function Color(props) {
     const { color, subscribe, unsubscribe } = props
 
-    // $FlowTODO
     React.useEffect(() => {
-        // $FlowTODO
         root.style.setProperty('--random-color', color)
     })
 

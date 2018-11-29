@@ -1,13 +1,18 @@
 // @flow
 declare type GraphQLAST = {|
-  definitions: Array<{}>,
-  kind: string,
-  loc: {}
-|};
+    definitions: Array<{}>,
+    kind: string,
+    loc: {}
+|}
 
 declare type GraphQLError = {
-  id?: string,
-  message: string,
-  request?: *,
-  type: string
-};
+    id?: string,
+    message: string,
+    request?: *,
+    type: string
+}
+
+declare type GraphQLResponse = {
+    data: *,
+    error?: Array<GraphQLError>
+}
