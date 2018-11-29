@@ -9,9 +9,7 @@ import { execute, subscribe } from 'graphql'
 import schema from './schema/index.js'
 
 const DEFAULT_PORT = 8081
-
 const PORT = process.env.PORT || DEFAULT_PORT
-
 const server = new Koa()
 
 server.use(cors())
@@ -23,7 +21,7 @@ server.use(
             schema,
             graphiql: true,
             subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`,
-            formatError: error => ({
+            formatError: (error) => ({
                 message: error.message,
                 status: error.status
             })
@@ -41,8 +39,8 @@ ws.listen(PORT, () => {
             execute,
             subscribe,
             schema,
-            onConnect: x => {
-                console.log(x)
+            onConnect: (connectionParams) => {
+                console.log('Connection established: ', connectionParams)
             }
         },
         {

@@ -1,6 +1,6 @@
 import { GraphQLNonNull, GraphQLString } from 'graphql'
 
-export const color = pubsub => {
+export const color = (pubsub) => {
     let COLOR_SUBSCRIPTION_CHANNEL = '*'
 
     setInterval(() => {
@@ -15,7 +15,7 @@ export const color = pubsub => {
             channel: { type: new GraphQLNonNull(GraphQLString) }
         },
         subscribe: (_, { channel }) => {
-            console.log('Subscribed to ', channel)
+            console.log(`Subscribed to ${channel}`)
             COLOR_SUBSCRIPTION_CHANNEL = channel
 
             return pubsub.asyncIterator(COLOR_SUBSCRIPTION_CHANNEL)
