@@ -5140,7 +5140,7 @@ strip-json-comments@^2.0.1, strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-subscriptions-transport-ws-hally9k@0.0.1-alpha.1:
+subscriptions-transport-ws-hally9k@^0.0.1-alpha.1:
   version "0.0.1-alpha.1"
   resolved "https://registry.yarnpkg.com/subscriptions-transport-ws-hally9k/-/subscriptions-transport-ws-hally9k-0.0.1-alpha.1.tgz#72f59dbfa07eda1fc2690a6f9de8746a691269db"
   integrity sha512-8pjqeor8RDRAvMYMPdvpfmfuGMmtXP96YFkCU05n3F6Ud7in6blVxf3yxaCLgi+7tp8o5iyJbeFvxSUtFxfc0w==

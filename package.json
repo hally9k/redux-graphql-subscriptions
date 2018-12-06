@@ -35,7 +35,8 @@
     "flow-bin": "^0.86.0",
     "flow-typed": "^2.5.1",
     "graphql": "^14.0.2",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "subscriptions-transport-ws-hally9k": "^0.0.1-alpha.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -43,9 +44,8 @@
   },
   "peerDependencies": {
     "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.1 || ^14.0.2",
-    "redux": ">=3.7.0"
+    "redux": ">=3.7.0",
+    "subscriptions-transport-ws-hally9k": ">=0.0.1-alpha.1"
   },
-  "dependencies": {
-    "subscriptions-transport-ws-hally9k": "0.0.1-alpha.1"
-  }
+  "dependencies": {}
 }
