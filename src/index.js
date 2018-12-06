@@ -1,5 +1,5 @@
 // @flow
-import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { SubscriptionClient } from 'subscriptions-transport-ws-hally9k'
 import { type SubscriptionPayload } from './index.js.flow'
 
 const SUBSCRIBE: string = 'redux-graphql-subscriptions/SUBSCRIBE'
@@ -20,8 +20,16 @@ export const unsubscribe: * = (
     payload: subscriptionName
 })
 
-export function createMiddleware(url: string, options: *): * {
-    const wsClient: SubscriptionClient = new SubscriptionClient(url, options)
+export function createMiddleware(
+    url: string,
+    options: *,
+    protocols?: string | Array<string>
+): * {
+    const wsClient: SubscriptionClient = new SubscriptionClient(
+        url,
+        options,
+        protocols
+    )
     const currentSubscriptions: { [string]: (() => void) | null } = {}
 
     return ({ dispatch }: *): * => (next: *): * => (action: *): * => {
