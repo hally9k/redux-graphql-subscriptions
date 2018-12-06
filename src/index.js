@@ -28,6 +28,7 @@ export function createMiddleware(
     const wsClient: SubscriptionClient = new SubscriptionClient(
         url,
         options,
+        null,
         protocols
     )
     const currentSubscriptions: { [string]: (() => void) | null } = {}
