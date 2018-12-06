@@ -1,6 +1,12 @@
 // @flow
-import * as subscriptionsTransportWs from 'subscriptions-transport-ws'
-import { createMiddleware, subscribe, unsubscribe } from './index.js'
+import * as subscriptionsTransportWs from 'subscriptions-transport-ws-hally9k'
+import {
+    connect,
+    createMiddleware,
+    disconnect,
+    subscribe,
+    unsubscribe
+} from './index.js'
 import { type SubscriptionPayload } from './index.js.flow'
 
 type AppState = {}
@@ -11,6 +17,7 @@ type ReduxActionOut =
     | ReduxAction<Array<GraphQLError>>
     | ReduxAction<any>
 const mockUnsubscribe: * = jest.fn()
+const mockClose: * = jest.fn()
 const mockGraphqlResponse: * = { data: {} }
 const mockGraphqlResponseWithError: * = {
     data: {},
@@ -31,12 +38,13 @@ const mockRequest: * = jest.fn(
 )
 
 jest.mock(
-    'subscriptions-transport-ws',
+    'subscriptions-transport-ws-hally9k',
     (): * => ({
         SubscriptionClient: jest.fn().mockImplementation(
             (): * => {
                 return {
-                    request: mockRequest
+                    request: mockRequest,
+                    close: mockClose
                 }
             }
         )
@@ -59,14 +67,15 @@ describe('Redux Subscriptions Middleware', () => {
     // Hold a single instance of the closed over values
     const middleware: * = middlewareFactory({ dispatch, getState })(next)
     const query: string = 'mock-query'
-    const mockChannel: string = 'test'
+    const mockKey: string = 'test'
     const variables: * = {
-        channel: mockChannel
+        channel: 'channel'
     }
     const mockOnMessage: * = jest.fn()
     const mockOnError: * = jest.fn()
     const mockOnUnsubscribe: * = jest.fn()
     const payload: SubscriptionPayload = {
+        key: mockKey,
         query,
         variables,
         onMessage: mockOnMessage,
@@ -74,21 +83,13 @@ describe('Redux Subscriptions Middleware', () => {
         onUnsubscribe: mockOnUnsubscribe
     }
     const subscribeAction: * = subscribe(payload)
-    const unSubscribeAction: * = unsubscribe(mockChannel)
+    const unSubscribeAction: * = unsubscribe(mockKey)
 
     afterEach(
         (): * => {
             jest.clearAllMocks()
         }
     )
-
-    it('Passes url and options to the SubscriptionClient constructor on middleware creation', () => {
-        expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledTimes(1)
-        expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledWith(
-            wsEndpointUrl,
-            options
-        )
-    })
 
     it('Passes all actions down the middleware chain', () => {
         const unhandledAction: * = { type: 'UNHANDLED' }
@@ -98,6 +99,15 @@ describe('Redux Subscriptions Middleware', () => {
         // Passes the action down the middleware chain
         expect(next).toBeCalledTimes(1)
         expect(next).toBeCalledWith(unhandledAction)
+    })
+
+    it('Handles the CONNECT action', () => {
+        middleware(connect())
+        expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledTimes(1)
+        expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledWith(
+            wsEndpointUrl,
+            options
+        )
     })
 
     it('Handles the SUBSCRIBE action', () => {
@@ -143,5 +153,10 @@ describe('Redux Subscriptions Middleware', () => {
         // Passes the action down the middleware chain
         expect(next).toBeCalledTimes(2)
         expect(next).toBeCalledWith(unSubscribeAction)
+    })
+
+    it('Handles the DISCONNECT action', () => {
+        middleware(disconnect(mockKey))
+        expect(mockClose).toBeCalledTimes(1)
     })
 })

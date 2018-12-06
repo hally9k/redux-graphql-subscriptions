@@ -679,6 +679,28 @@
     universal-user-agent "^2.0.0"
     url-template "^2.0.8"
 
+a@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/a/-/a-2.1.2.tgz#50285405e608e0731e2f8a3028e4951298c928f8"
+  integrity sha512-k1Yi4xRCaybhtlqHlnfcTt8TrxqigU/hEZp4JJe8LR/2WQJWHF1HJP/qgak3Smci+SvY6pDuVbaepGkFitpXCg==
+  dependencies:
+    a_mock "1.0.5"
+    a_test "1.0.9"
+
+a_mock@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/a_mock/-/a_mock-1.0.5.tgz#1db6ea996071d732f9924b3c63d4bb4125d19a3e"
+  integrity sha1-HbbqmWBx1zL5kks8Y9S7QSXRmj4=
+
+a_test@1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/a_test/-/a_test-1.0.9.tgz#cb71d8f393c7ce5ac1a8daf7c6d51d3021221d9e"
+  integrity sha512-dqGL+P85W7kD3azCFMICGiNsOIhoFdWfRFXRwIh6+M9EWpNdFtV0SRGEQZJ4gCH6sF/secUh/qbxGLvMx6pbUw==
+  dependencies:
+    babel-polyfill "^6.5.0"
+    babel-register "^6.6.0"
+    console-style "^0.1.2"
+
 abab@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.0.tgz#aba0ab4c5eee2d4c79d3487d85450fb2376ebb0f"
@@ -1038,7 +1060,7 @@ babel-plugin-syntax-object-rest-spread@^6.13.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-object-rest-spread/-/babel-plugin-syntax-object-rest-spread-6.13.0.tgz#fd6536f2bce13836ffa3a5458c4903a597bb3bf5"
   integrity sha1-/WU28rzhODb/o6VFjEkDpZe7O/U=
 
-babel-polyfill@^6.26.0:
+babel-polyfill@^6.26.0, babel-polyfill@^6.5.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.26.0.tgz#379937abc67d7895970adc621f284cd966cf2153"
   integrity sha1-N5k3q8Z9eJWXCtxiHyhM2WbPIVM=
@@ -1055,7 +1077,7 @@ babel-preset-jest@^23.2.0:
     babel-plugin-jest-hoist "^23.2.0"
     babel-plugin-syntax-object-rest-spread "^6.13.0"
 
-babel-register@^6.26.0:
+babel-register@^6.26.0, babel-register@^6.6.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-register/-/babel-register-6.26.0.tgz#6ed021173e2fcb486d7acb45c6009a856f647071"
   integrity sha1-btAhFz4vy0htestFxgCahW9kcHE=
@@ -1513,6 +1535,11 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
+
+console-style@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/console-style/-/console-style-0.1.2.tgz#ec49e37808cbaa5d1a64f38e2173fca098d46577"
+  integrity sha1-7EnjeAjLql0aZPOOIXP8oJjUZXc=
 
 contains-path@^0.1.0:
   version "0.1.0"
@@ -5140,10 +5167,10 @@ strip-json-comments@^2.0.1, strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-subscriptions-transport-ws-hally9k@0.0.1-alpha.2:
-  version "0.0.1-alpha.2"
-  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws-hally9k/-/subscriptions-transport-ws-hally9k-0.0.1-alpha.2.tgz#9f2e992b92cebe4d978bf6375add10ccb32b3fdb"
-  integrity sha512-P/iNUm+XeteOIeobr+ZAFKU/8PEti7oks6xlUM+NdHn84LfKzhUzqeZ9vAPV9EAKBfNug3CtKQ8ZJyw6qef7pw==
+subscriptions-transport-ws-hally9k@0.0.1-alpha.3:
+  version "0.0.1-alpha.3"
+  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws-hally9k/-/subscriptions-transport-ws-hally9k-0.0.1-alpha.3.tgz#214f229b54074575ec70a23e6dd0e6bb9990269f"
+  integrity sha512-VwuvQVgWPKt/3tgh4pI2h7S2MZGY3xnRzhC5gwFFQKXmL7cQse7gJjP0tCvyBQtxB8DN+c9NlUSG7DD4itiStw==
   dependencies:
     backo2 "^1.0.2"
     eventemitter3 "^3.1.0"

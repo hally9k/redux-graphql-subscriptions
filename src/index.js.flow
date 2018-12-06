@@ -1,12 +1,11 @@
 // @flow
 export type SubscriptionPayload = {
+    key: string,
     onError: (payload: Array<GraphQLError>) => ReduxAction<Array<GraphQLError>>,
     onMessage: (payload: GraphQLResponse) => ReduxAction<GraphQLResponse>,
     onUnsubscribe: (payload: string) => ReduxAction<string>,
     query: string,
-    variables: {
-        channel: string
-    }
+    variables: {}
 }
 export type ReduxActionIn =
     | ReduxAction<SubscriptionPayload>

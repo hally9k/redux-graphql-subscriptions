@@ -2,6 +2,18 @@
 import { SubscriptionClient } from 'subscriptions-transport-ws-hally9k'
 import { type SubscriptionPayload } from './index.js.flow'
 
+const CONNECT: string = 'redux-graphql-subscriptions/CONNECT'
+
+export const connect: * = (): ReduxAction<*> => ({
+    type: CONNECT
+})
+
+const DISCONNECT: string = 'redux-graphql-subscriptions/DISCONNECT'
+
+export const disconnect: * = (): ReduxAction<*> => ({
+    type: DISCONNECT
+})
+
 const SUBSCRIBE: string = 'redux-graphql-subscriptions/SUBSCRIBE'
 
 export const subscribe: * = (
@@ -13,55 +25,48 @@ export const subscribe: * = (
 
 const UNSUBSCRIBE: string = 'redux-graphql-subscriptions/UNSUBSCRIBE'
 
-export const unsubscribe: * = (
-    subscriptionName: string
-): ReduxAction<string> => ({
+export const unsubscribe: * = (key: string): ReduxAction<string> => ({
     type: UNSUBSCRIBE,
-    payload: subscriptionName
+    payload: key
 })
 
-export function createMiddleware(
-    url: string,
-    options: *,
-    protocols?: string | Array<string>
-): * {
-    const wsClient: SubscriptionClient = new SubscriptionClient(
-        url,
-        options,
-        null,
-        protocols
-    )
-    const currentSubscriptions: { [string]: (() => void) | null } = {}
+export function createMiddleware(url: string, options: *): * {
+    let wsClient: SubscriptionClient | null = null
+    const unsubscriberMap: { [string]: (() => void) | null } = {}
 
     return ({ dispatch }: *): * => (next: *): * => (action: *): * => {
         const { type }: * = action
 
-        if (type === SUBSCRIBE) {
+        if (type === CONNECT && !wsClient) {
+            wsClient = new SubscriptionClient(url, options)
+        }
+        if (type === DISCONNECT && wsClient) {
+            wsClient.close()
+            wsClient = null
+        }
+        if (type === SUBSCRIBE && wsClient) {
             const payload: SubscriptionPayload = (action.payload: any)
-            const {
-                variables: { channel },
-                onUnsubscribe
-            }: SubscriptionPayload = payload
+            const { key, onUnsubscribe }: SubscriptionPayload = payload
 
-            if (!currentSubscriptions[channel]) {
+            if (!unsubscriberMap[key]) {
                 const { unsubscribe }: * = wsSubscribe(
                     wsClient,
                     dispatch,
                     payload
                 )
 
-                currentSubscriptions[channel] = () => {
+                unsubscriberMap[key] = () => {
                     unsubscribe()
-                    dispatch(onUnsubscribe(channel))
+                    dispatch(onUnsubscribe(key))
                 }
             }
         }
-        if (type === UNSUBSCRIBE) {
-            const channel: string = (action.payload: any)
+        if (type === UNSUBSCRIBE && wsClient) {
+            const key: string = (action.payload: any)
 
-            if (typeof currentSubscriptions[channel] === 'function') {
-                (currentSubscriptions[channel]: any)() // Flow struggles with this being narrowed to a function...
-                currentSubscriptions[channel] = null
+            if (typeof unsubscriberMap[key] === 'function') {
+                (unsubscriberMap[key]: any)() // Flow struggles with this being narrowed to a function...
+                unsubscriberMap[key] = null
             }
         }
 
