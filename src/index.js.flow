@@ -25,10 +25,14 @@ declare function createMiddleware<AppState>(
     }
 ): ReduxMiddleware<AppState, ReduxActionIn, ReduxActionOut>
 
+declare function connect(): ReduxAction<*>
+
+declare function disconnect(): ReduxAction<*>
+
 declare function subscribe(
     payload: SubscriptionPayload
 ): ReduxAction<SubscriptionPayload>
 
 declare function unsubscribe(payload: string): ReduxAction<string>
 
-export { createMiddleware, subscribe, unsubscribe }
+export { createMiddleware, subscribe, unsubscribe, connect, disconnect }
