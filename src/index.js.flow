@@ -27,7 +27,7 @@ declare function createMiddleware<AppState>(
 
 declare function connect(): ReduxAction<*>
 
-declare function disconnect(): ReduxAction<*>
+declare function disconnect(key: string): ReduxAction<string>
 
 declare function subscribe(
     payload: SubscriptionPayload
