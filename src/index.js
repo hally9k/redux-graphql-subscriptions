@@ -58,7 +58,9 @@ export function createMiddleware(url: string, options: *): * {
             if (type === CONNECT && !wsClient) {
                 wsClient = new SubscriptionClient(url, options)
 
-                wsClient.on('connected', dispatchQueuedActions)
+                wsClient.onConnected(() => {
+                    dispatchQueuedActions()
+                })
             }
             if (type === DISCONNECT && wsClient) {
                 wsClient.close()
