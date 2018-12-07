@@ -5,7 +5,7 @@ export type SubscriptionPayload = {
     onMessage: (payload: GraphQLResponse) => ReduxAction<GraphQLResponse>,
     onUnsubscribe: (payload: string) => ReduxAction<string>,
     query: string,
-    variables: {}
+    variables?: {}
 }
 export type ReduxActionIn =
     | ReduxAction<SubscriptionPayload>

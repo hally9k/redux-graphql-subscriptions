@@ -30,47 +30,72 @@ export const unsubscribe: * = (key: string): ReduxAction<string> => ({
     payload: key
 })
 
+export const WS_CLIENT_STATUS: * = {
+    CLOSED: 3,
+    CLOSING: 2,
+    CONNECTING: 0,
+    OPEN: 1
+}
+
 export function createMiddleware(url: string, options: *): * {
-    let wsClient: SubscriptionClient | null = null
+    let actionQueue: Array<ReduxAction<SubscriptionPayload>> = [],
+        wsClient: SubscriptionClient | null = null
     const unsubscriberMap: { [string]: (() => void) | null } = {}
 
-    return ({ dispatch }: *): * => (next: *): * => (action: *): * => {
-        const { type }: * = action
+    return ({ dispatch }: *): * => {
+        function dispatchQueuedActions() {
+            const queueToDispatch: Array<ReduxAction<SubscriptionPayload>> = [
+                ...actionQueue
+            ]
 
-        if (type === CONNECT && !wsClient) {
-            wsClient = new SubscriptionClient(url, options)
+            actionQueue = []
+            queueToDispatch.forEach(dispatch)
         }
-        if (type === DISCONNECT && wsClient) {
-            wsClient.close()
-            wsClient = null
-        }
-        if (type === SUBSCRIBE && wsClient) {
-            const payload: SubscriptionPayload = (action.payload: any)
-            const { key, onUnsubscribe }: SubscriptionPayload = payload
 
-            if (!unsubscriberMap[key]) {
-                const { unsubscribe }: * = wsSubscribe(
-                    wsClient,
-                    dispatch,
-                    payload
-                )
+        return (next: *): * => (action: *): * => {
+            const { type }: * = action
 
-                unsubscriberMap[key] = () => {
-                    unsubscribe()
-                    dispatch(onUnsubscribe(key))
+            if (type === CONNECT && !wsClient) {
+                wsClient = new SubscriptionClient(url, options)
+
+                wsClient.on('connected', dispatchQueuedActions)
+            }
+            if (type === DISCONNECT && wsClient) {
+                wsClient.close()
+                wsClient = null
+            }
+            if (type === SUBSCRIBE && wsClient) {
+                if (wsClient.status === WS_CLIENT_STATUS.OPEN) {
+                    const payload: SubscriptionPayload = (action.payload: any)
+                    const { key, onUnsubscribe }: SubscriptionPayload = payload
+
+                    if (!unsubscriberMap[key]) {
+                        const { unsubscribe }: * = wsSubscribe(
+                            wsClient,
+                            dispatch,
+                            payload
+                        )
+
+                        unsubscriberMap[key] = () => {
+                            unsubscribe()
+                            dispatch(onUnsubscribe(key))
+                        }
+                    }
+                } else {
+                    actionQueue.push(action)
                 }
             }
-        }
-        if (type === UNSUBSCRIBE && wsClient) {
-            const key: string = (action.payload: any)
+            if (type === UNSUBSCRIBE && wsClient) {
+                const key: string = (action.payload: any)
 
-            if (typeof unsubscriberMap[key] === 'function') {
-                (unsubscriberMap[key]: any)() // Flow struggles with this being narrowed to a function...
-                unsubscriberMap[key] = null
+                if (typeof unsubscriberMap[key] === 'function') {
+                    (unsubscriberMap[key]: any)() // Flow struggles with this being narrowed to a function...
+                    unsubscriberMap[key] = null
+                }
             }
-        }
 
-        return next(action)
+            return next(action)
+        }
     }
 }
 

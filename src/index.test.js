@@ -1,9 +1,11 @@
 // @flow
+/* eslint-disable no-magic-numbers */
 import * as subscriptionsTransportWs from 'subscriptions-transport-ws-hally9k'
 import {
     connect,
     createMiddleware,
     disconnect,
+    WS_CLIENT_STATUS as mockWsClientStatus,
     subscribe,
     unsubscribe
 } from './index.js'
@@ -16,8 +18,14 @@ type ReduxActionOut =
     | ReduxAction<GraphQLResponse>
     | ReduxAction<Array<GraphQLError>>
     | ReduxAction<any>
+
+let connectedEventHandler: *
+
 const mockUnsubscribe: * = jest.fn()
 const mockClose: * = jest.fn()
+const mockOn: * = jest.fn((eventType: string, callback: *) => {
+    connectedEventHandler = callback
+})
 const mockGraphqlResponse: * = { data: {} }
 const mockGraphqlResponseWithError: * = {
     data: {},
@@ -44,7 +52,9 @@ jest.mock(
             (): * => {
                 return {
                     request: mockRequest,
-                    close: mockClose
+                    close: mockClose,
+                    status: mockWsClientStatus.CLOSED,
+                    on: mockOn
                 }
             }
         )
@@ -91,72 +101,127 @@ describe('Redux Subscriptions Middleware', () => {
         }
     )
 
-    it('Passes all actions down the middleware chain', () => {
-        const unhandledAction: * = { type: 'UNHANDLED' }
+    describe('Initial connection', () => {
+        it('Passes all actions down the middleware chain', () => {
+            const unhandledAction: * = { type: 'UNHANDLED' }
 
-        middleware(unhandledAction)
+            middleware(unhandledAction)
 
-        // Passes the action down the middleware chain
-        expect(next).toBeCalledTimes(1)
-        expect(next).toBeCalledWith(unhandledAction)
+            // Passes the action down the middleware chain
+            expect(next).toBeCalledTimes(1)
+            expect(next).toBeCalledWith(unhandledAction)
+        })
+
+        it('Handles the CONNECT action', () => {
+            middleware(connect())
+            expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledTimes(
+                1
+            )
+            expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledWith(
+                wsEndpointUrl,
+                options
+            )
+            expect(mockOn).toBeCalledWith('connected', connectedEventHandler)
+        })
+
+        it('Handles subscription requests when the client isn\'t yet open and dispatches them when the `connected` event is emitted', () => {
+            middleware(subscribeAction)
+            expect(mockRequest).not.toBeCalled()
+
+            connectedEventHandler()
+            expect(dispatch).toBeCalledTimes(1)
+            expect(dispatch).toBeCalledWith(subscribeAction, 0, [
+                subscribeAction
+            ])
+        })
     })
 
-    it('Handles the CONNECT action', () => {
-        middleware(connect())
-        expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledTimes(1)
-        expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledWith(
-            wsEndpointUrl,
-            options
+    describe('Once the client is open', () => {
+        let middleware: *
+
+        beforeAll(() => {
+            jest.resetModules()
+            jest.doMock(
+                'subscriptions-transport-ws-hally9k',
+                (): * => ({
+                    SubscriptionClient: jest.fn().mockImplementation(
+                        (): * => {
+                            return {
+                                request: mockRequest,
+                                close: mockClose,
+                                status: mockWsClientStatus.OPEN,
+                                on: mockOn
+                            }
+                        }
+                    )
+                })
+            )
+            const { createMiddleware }: * = require('./index.js')
+
+            middleware = createMiddleware(wsEndpointUrl, options)({
+                dispatch,
+                getState
+            })(next)
+
+            middleware(connect())
+        })
+
+        afterEach(
+            (): * => {
+                jest.clearAllMocks()
+            }
         )
-    })
 
-    it('Handles the SUBSCRIBE action', () => {
-        middleware(subscribeAction)
+        it('Handles the SUBSCRIBE action', () => {
+            middleware(subscribeAction)
 
-        // Make sure that duplicate requests are handled, it shouldn't do everything twice.
-        middleware(subscribeAction)
+            // Make sure that duplicate requests are handled, it shouldn't do everything twice.
+            middleware(subscribeAction)
 
-        // Make request to subscribe
-        expect(mockRequest).toBeCalledTimes(1)
-        expect(mockRequest).toBeCalledWith({ query, variables })
+            // Make request to subscribe
+            expect(mockRequest).toBeCalledTimes(1)
+            expect(mockRequest).toBeCalledWith({ query, variables })
 
-        // Subscribe to messages on the request
-        expect(mockSubscribe).toBeCalledTimes(1)
+            // Subscribe to messages on the request
+            expect(mockSubscribe).toBeCalledTimes(1)
 
-        // Dispatch the given onMessage action when receiving a graphql response
-        expect(mockOnMessage).toBeCalledTimes(1)
-        expect(mockOnMessage).toBeCalledWith(mockGraphqlResponse)
-        expect(dispatch).toBeCalledWith(mockOnMessage(mockGraphqlResponse))
+            // Dispatch the given onMessage action when receiving a graphql response
+            expect(mockOnMessage).toBeCalledTimes(1)
+            expect(mockOnMessage).toBeCalledWith(mockGraphqlResponse)
+            expect(dispatch).toBeCalledWith(mockOnMessage(mockGraphqlResponse))
 
-        // Dispatch the given onError action when receiving a graphql response with an error
-        expect(mockOnError).toBeCalledTimes(1)
-        expect(mockOnError).toBeCalledWith(mockGraphqlResponseWithError.error)
-        expect(dispatch).toBeCalledWith(
-            mockOnError(mockGraphqlResponseWithError.error)
-        )
+            // Dispatch the given onError action when receiving a graphql response with an error
+            expect(mockOnError).toBeCalledTimes(1)
+            expect(mockOnError).toBeCalledWith(
+                mockGraphqlResponseWithError.error
+            )
+            expect(dispatch).toBeCalledWith(
+                mockOnError(mockGraphqlResponseWithError.error)
+            )
 
-        // Passes the action down the middleware chain
-        expect(next).toBeCalledTimes(2)
-        expect(next).toBeCalledWith(subscribeAction)
-    })
+            // Passes the action down the middleware chain
+            expect(next).toBeCalledTimes(3)
+            expect(next).toBeCalledWith(subscribeAction)
+        })
 
-    it('Handles the UNSUBSCRIBE action', () => {
-        middleware(unSubscribeAction)
+        it('Handles the UNSUBSCRIBE action', () => {
+            middleware(unSubscribeAction)
 
-        // Make sure that duplicate requests are handled, it shouldn't do everything twice.
-        middleware(unSubscribeAction)
+            // Make sure that duplicate requests are handled, it shouldn't do everything twice.
+            middleware(unSubscribeAction)
 
-        expect(mockUnsubscribe).toBeCalledTimes(1)
-        expect(mockOnUnsubscribe).toBeCalledTimes(1)
-        expect(dispatch).toBeCalledWith(mockOnUnsubscribe())
+            expect(mockUnsubscribe).toBeCalledTimes(1)
+            expect(mockOnUnsubscribe).toBeCalledTimes(1)
+            expect(dispatch).toBeCalledWith(mockOnUnsubscribe())
 
-        // Passes the action down the middleware chain
-        expect(next).toBeCalledTimes(2)
-        expect(next).toBeCalledWith(unSubscribeAction)
-    })
+            // Passes the action down the middleware chain
+            expect(next).toBeCalledTimes(2)
+            expect(next).toBeCalledWith(unSubscribeAction)
+        })
 
-    it('Handles the DISCONNECT action', () => {
-        middleware(disconnect(mockKey))
-        expect(mockClose).toBeCalledTimes(1)
+        it('Handles the DISCONNECT action', () => {
+            middleware(disconnect(mockKey))
+            expect(mockClose).toBeCalledTimes(1)
+        })
     })
 })
