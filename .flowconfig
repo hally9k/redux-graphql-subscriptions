@@ -16,3 +16,6 @@ module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=example
 
 [strict]
+
+[version]
+0.86.0

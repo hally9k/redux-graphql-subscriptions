@@ -17,6 +17,15 @@ export type ReduxActionOut =
     | ReduxAction<Array<GraphQLError>>
     | ReduxAction<any>
 
+export type WsClientStatusMap = {
+    CLOSED: 3,
+    CLOSING: 2,
+    CONNECTING: 0,
+    OPEN: 1
+}
+
+declare var WS_CLIENT_STATUS: WsClientStatusMap
+
 declare function createMiddleware<AppState>(
     url: string,
     options: {
@@ -35,4 +44,11 @@ declare function subscribe(
 
 declare function unsubscribe(payload: string): ReduxAction<string>
 
-export { createMiddleware, subscribe, unsubscribe, connect, disconnect }
+export {
+    createMiddleware,
+    subscribe,
+    unsubscribe,
+    connect,
+    disconnect,
+    WS_CLIENT_STATUS
+}

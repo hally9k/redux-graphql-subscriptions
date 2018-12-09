@@ -5,11 +5,11 @@ import {
     connect,
     createMiddleware,
     disconnect,
-    WS_CLIENT_STATUS as mockWsClientStatus,
     subscribe,
-    unsubscribe
-} from './index.js'
-import { type SubscriptionPayload } from './index.js.flow'
+    type SubscriptionPayload,
+    unsubscribe,
+    WS_CLIENT_STATUS
+} from './index'
 
 type AppState = {}
 
@@ -23,7 +23,7 @@ let connectedEventHandler: *
 
 const mockUnsubscribe: * = jest.fn()
 const mockClose: * = jest.fn()
-const mockOn: * = jest.fn((eventType: string, callback: *) => {
+const mockOnConnected: * = jest.fn((callback: *) => {
     connectedEventHandler = callback
 })
 const mockGraphqlResponse: * = { data: {} }
@@ -53,8 +53,8 @@ jest.mock(
                 return {
                     request: mockRequest,
                     close: mockClose,
-                    status: mockWsClientStatus.CLOSED,
-                    on: mockOn
+                    status: WS_CLIENT_STATUS.CLOSED,
+                    onConnected: mockOnConnected
                 }
             }
         )
@@ -121,7 +121,7 @@ describe('Redux Subscriptions Middleware', () => {
                 wsEndpointUrl,
                 options
             )
-            expect(mockOn).toBeCalledWith('connected', connectedEventHandler)
+            expect(mockOnConnected).toBeCalledWith(connectedEventHandler)
         })
 
         it('Handles subscription requests when the client isn\'t yet open and dispatches them when the `connected` event is emitted', () => {
@@ -149,8 +149,8 @@ describe('Redux Subscriptions Middleware', () => {
                             return {
                                 request: mockRequest,
                                 close: mockClose,
-                                status: mockWsClientStatus.OPEN,
-                                on: mockOn
+                                status: WS_CLIENT_STATUS.OPEN,
+                                onConnected: mockOnConnected
                             }
                         }
                     )

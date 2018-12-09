@@ -1,6 +1,6 @@
 // @flow
+import type { SubscriptionPayload, WsClientStatusMap } from './index.js.flow'
 import { SubscriptionClient } from 'subscriptions-transport-ws-hally9k'
-import { type SubscriptionPayload } from './index.js.flow'
 
 const CONNECT: string = 'redux-graphql-subscriptions/CONNECT'
 
@@ -30,7 +30,7 @@ export const unsubscribe: * = (key: string): ReduxAction<string> => ({
     payload: key
 })
 
-export const WS_CLIENT_STATUS: * = {
+export const WS_CLIENT_STATUS: WsClientStatusMap = {
     CLOSED: 3,
     CLOSING: 2,
     CONNECTING: 0,
