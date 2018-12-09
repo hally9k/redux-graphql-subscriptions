@@ -11,14 +11,6 @@ import {
     WS_CLIENT_STATUS
 } from './index'
 
-type AppState = {}
-
-type ReduxActionIn = ReduxAction<SubscriptionPayload> | ReduxAction<string>
-type ReduxActionOut =
-    | ReduxAction<GraphQLResponse>
-    | ReduxAction<Array<GraphQLError>>
-    | ReduxAction<any>
-
 let connectedEventHandler: *
 
 const mockUnsubscribe: * = jest.fn()
@@ -69,11 +61,7 @@ describe('Redux Subscriptions Middleware', () => {
     const dispatch: * = jest.fn()
     const getState: * = jest.fn()
     const next: * = jest.fn()
-    const middlewareFactory: ReduxMiddleware<
-        AppState,
-        ReduxActionIn,
-        ReduxActionOut
-    > = createMiddleware(wsEndpointUrl, options)
+    const middlewareFactory: * = createMiddleware(wsEndpointUrl, options)
     // Hold a single instance of the closed over values
     const middleware: * = middlewareFactory({ dispatch, getState })(next)
     const query: string = 'mock-query'

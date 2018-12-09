@@ -1,4 +1,47 @@
 // @flow
+/*  eslint-disable no-unused-vars */
+
+// GraphQL
+export type GraphQLError = {
+    id?: string,
+    message: string,
+    request?: *,
+    type: string
+}
+
+export type GraphQLResponse = {
+    data: *,
+    error?: Array<GraphQLError>
+}
+
+// Redux
+type DispatchAPI<A> = (action: A) => A
+type Dispatch<A: { type: $Subtype<string> }> = DispatchAPI<A>
+
+type MiddlewareAPI<S, A, D = Dispatch<A>> = {
+    dispatch: D,
+    getState(): S
+}
+
+// State = Application State
+// IA = InputAction
+// OA = OutputAction
+// ID = InputDispatch
+// OD = OutputDispatch
+
+type ReduxMiddleware<S, IA, OA = IA, ID = Dispatch<IA>, OD = Dispatch<OA>> = (
+    api: MiddlewareAPI<S, OA>
+) => (next: ID) => ID
+
+// P = Payload
+// M = Meta
+type ReduxAction<P = {}, M = {}> = {
+    meta?: M,
+    payload?: P,
+    type: string
+}
+
+// Exported Types
 export type SubscriptionPayload = {
     key: string,
     onError: (payload: Array<GraphQLError>) => ReduxAction<Array<GraphQLError>>,
@@ -8,15 +51,6 @@ export type SubscriptionPayload = {
     variables?: {}
 }
 
-export type ReduxActionIn =
-    | ReduxAction<SubscriptionPayload>
-    | ReduxAction<string>
-
-export type ReduxActionOut =
-    | ReduxAction<GraphQLResponse>
-    | ReduxAction<Array<GraphQLError>>
-    | ReduxAction<any>
-
 export type WsClientStatusMap = {
     CLOSED: 3,
     CLOSING: 2,
@@ -24,6 +58,15 @@ export type WsClientStatusMap = {
     OPEN: 1
 }
 
+// Internal Types
+type ReduxActionIn = ReduxAction<SubscriptionPayload> | ReduxAction<string>
+
+type ReduxActionOut =
+    | ReduxAction<GraphQLResponse>
+    | ReduxAction<Array<GraphQLError>>
+    | ReduxAction<any>
+
+// Module
 declare var WS_CLIENT_STATUS: WsClientStatusMap
 
 declare function createMiddleware<AppState>(
