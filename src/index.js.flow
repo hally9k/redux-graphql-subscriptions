@@ -80,13 +80,13 @@ declare function createMiddleware<AppState>(
 
 declare function connect(): ReduxAction<*>
 
-declare function disconnect(key: string): ReduxAction<string>
+declare function disconnect(): ReduxAction<*>
 
 declare function subscribe(
     payload: SubscriptionPayload
 ): ReduxAction<SubscriptionPayload>
 
-declare function unsubscribe(payload: string): ReduxAction<string>
+declare function unsubscribe(key: string): ReduxAction<string>
 
 export {
     createMiddleware,
