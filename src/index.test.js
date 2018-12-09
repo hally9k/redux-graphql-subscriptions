@@ -208,7 +208,7 @@ describe('Redux Subscriptions Middleware', () => {
         })
 
         it('Handles the DISCONNECT action', () => {
-            middleware(disconnect(mockKey))
+            middleware(disconnect())
             expect(mockClose).toBeCalledTimes(1)
         })
     })
