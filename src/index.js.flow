@@ -36,6 +36,7 @@ type ReduxMiddleware<S, IA, OA = IA, ID = Dispatch<IA>, OD = Dispatch<OA>> = (
 // P = Payload
 // M = Meta
 type ReduxAction<P = {}, M = {}> = {
+    error?: boolean,
     meta?: M,
     payload?: P,
     type: string

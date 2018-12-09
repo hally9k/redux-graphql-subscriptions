@@ -22,7 +22,8 @@ declare type ReduxMiddleware<
 
 // P = Payload
 // M = Meta
-declare type ReduxAction<P = {}, M = {}> = {
+declare type ReduxAction<P = {}, M = empty> = {
+    error?: boolean,
     meta?: M,
     payload?: P,
     type: string
