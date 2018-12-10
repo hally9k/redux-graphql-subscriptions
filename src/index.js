@@ -30,6 +30,13 @@ export const unsubscribe: * = (key: string): ReduxAction<string> => ({
     payload: key
 })
 
+const ERROR: string = 'redux-graphql-subscriptions/ERROR'
+
+export const error: * = (payload: GraphQlError): ReduxAction<GraphQlError> => ({
+    type: ERROR,
+    payload
+})
+
 export const WS_CLIENT_STATUS: WsClientStatusMap = {
     CLOSED: 3,
     CLOSING: 2,
@@ -92,7 +99,9 @@ export function createMiddleware(
 
                         unsubscriberMap[key] = () => {
                             unsubscribe()
-                            dispatch(onUnsubscribe(key))
+                            if (onUnsubscribe) {
+                                dispatch(onUnsubscribe(key))
+                            }
                         }
                     }
                 } else {
@@ -120,9 +129,11 @@ const wsSubscribe: * = (
 ): * => {
     return client.request({ query, variables }).subscribe({
         next: (res: GraphQLResponse): * => {
-            return res.error
-                ? dispatch(onError(res.error))
-                : dispatch(onMessage(res))
+            if (res.error) {
+                return dispatch(onError ? onError(res.error) : error(res.error))
+            }
+
+            return dispatch(onMessage(res))
         }
     })
 }
