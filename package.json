@@ -43,7 +43,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:debug": "node --inspect ./node_modules/.bin/jest --watch --runInBand",
-    "build": "mkdir -p dist && babel src/index.js --out-file dist/index.js --source-maps && cp src/index.js.flow dist/index.js.flow"
+    "build": "mkdir -p dist && babel src/index.js --out-file dist/index.js --source-maps && cp src/index.js.flow dist/index.js.flow",
+    "prepublish": "yarn build"
   },
   "peerDependencies": {
     "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.1 || ^14.0.2",
