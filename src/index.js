@@ -129,8 +129,10 @@ const wsSubscribe: * = (
 ): * => {
     return client.request({ query, variables }).subscribe({
         next: (res: GraphQLResponse): * => {
-            if (res.error) {
-                return dispatch(onError ? onError(res.error) : error(res.error))
+            if (res.errors) {
+                return dispatch(
+                    onError ? onError(res.errors) : error(res.errors)
+                )
             }
 
             return dispatch(onMessage(res))
