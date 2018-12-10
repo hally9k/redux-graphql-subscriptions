@@ -4,7 +4,6 @@ export const color = (pubsub) => {
     let CHANNEL_ID = '*'
 
     setInterval(() => {
-        console.log('Tick: ', CHANNEL_ID)
         pubsub.publish(CHANNEL_ID, {
             color: randomColor()
         })
