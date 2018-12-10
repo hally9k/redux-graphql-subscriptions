@@ -42,20 +42,16 @@ type ReduxAction<P = {}, M = {}> = {
     type: string
 }
 
-type PayloadToSingleOrBatchedReduxAction<P> = (
-    payload: P
-) => ReduxAction<*> | Array<ReduxAction<*>>
-
+// Exported Types
 // Exported Types
 export type SubscriptionPayload = {
     key: string,
-    onError: PayloadToSingleOrBatchedReduxAction<Array<GraphQLError>>,
-    onMessage: PayloadToSingleOrBatchedReduxAction<GraphQLResponse>,
-    onUnsubscribe: PayloadToSingleOrBatchedReduxAction<string>,
+    onError?: (payload: GraphQLError) => ReduxAction<*> | Array<ReduxAction<*>>,
+    onMessage: (payload: GraphQLResponse) => ReduxAction<*> | Array<ReduxAction<*>>,
+    onUnsubscribe?: (payload: string) => ReduxAction<*> | Array<ReduxAction<*>>,
     query: string,
     variables?: {}
 }
-
 export type WsClientStatusMap = {
     CLOSED: 3,
     CLOSING: 2,
