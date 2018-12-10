@@ -5176,10 +5176,10 @@ strip-json-comments@^2.0.1, strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-subscriptions-transport-ws-hally9k@0.0.1-alpha.3:
-  version "0.0.1-alpha.3"
-  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws-hally9k/-/subscriptions-transport-ws-hally9k-0.0.1-alpha.3.tgz#214f229b54074575ec70a23e6dd0e6bb9990269f"
-  integrity sha512-VwuvQVgWPKt/3tgh4pI2h7S2MZGY3xnRzhC5gwFFQKXmL7cQse7gJjP0tCvyBQtxB8DN+c9NlUSG7DD4itiStw==
+subscriptions-transport-ws-hally9k@0.0.1-alpha.4:
+  version "0.0.1-alpha.4"
+  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws-hally9k/-/subscriptions-transport-ws-hally9k-0.0.1-alpha.4.tgz#0d1d477bb76a672a367adb462349f33571af7763"
+  integrity sha512-kYesVpo7qxMqZmkr8yEfI8nLR5P+cB9wQzxWIhIKhb2TBSyW8TU3/IaDE00OsC6zVGUFCIOWgkkA3qibggXRGg==
   dependencies:
     backo2 "^1.0.2"
     eventemitter3 "^3.1.0"

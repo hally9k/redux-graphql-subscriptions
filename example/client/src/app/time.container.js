@@ -1,34 +1,28 @@
 import { connect } from 'react-redux'
-import { timeEventReceived, failure, timeUnsubscribed } from '../reducer'
+import { failure, timeEventReceived, timeUnsubscribed } from '../reducer'
 import App from './time'
 import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     time: state.time
 })
-
 const query = `
-    subscription Time($channel: String!) {
-        time(channel: $channel)
+    subscription Time {
+        time
     }
 `
-const PUB_SUB_CHANNEL = 'time'
-
-const variables = {
-    channel: PUB_SUB_CHANNEL
-}
-
+const subscriptionKey = 'time'
 const subscription = {
+    key: subscriptionKey,
     query,
-    variables,
+    variables: {},
     onMessage: timeEventReceived,
     onError: failure,
     onUnsubscribe: timeUnsubscribed
 }
-
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
     subscribe: () => dispatch(subscribe(subscription)),
-    unsubscribe: () => dispatch(unsubscribe(PUB_SUB_CHANNEL))
+    unsubscribe: () => dispatch(unsubscribe(subscriptionKey))
 })
 
 export default connect(

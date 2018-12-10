@@ -1,24 +1,22 @@
-import { GraphQLNonNull, GraphQLString } from 'graphql'
+import { GraphQLString } from 'graphql'
 
 export const color = (pubsub) => {
-    let COLOR_SUBSCRIPTION_CHANNEL = '*'
+    let CHANNEL_ID = '*'
 
     setInterval(() => {
-        pubsub.publish(COLOR_SUBSCRIPTION_CHANNEL, {
-            [COLOR_SUBSCRIPTION_CHANNEL]: randomColor()
+        console.log('Tick: ', CHANNEL_ID)
+        pubsub.publish(CHANNEL_ID, {
+            color: randomColor()
         })
     }, 500)
 
     return {
         type: GraphQLString,
-        args: {
-            channel: { type: new GraphQLNonNull(GraphQLString) }
-        },
-        subscribe: (_, { channel }) => {
-            console.log(`Subscribed to ${channel}`)
-            COLOR_SUBSCRIPTION_CHANNEL = channel
+        subscribe: (_, variables, ctx) => {
+            console.log(`Subscribed to ${ctx.id}`)
+            CHANNEL_ID = `color-${ctx.id}`
 
-            return pubsub.asyncIterator(COLOR_SUBSCRIPTION_CHANNEL)
+            return pubsub.asyncIterator(CHANNEL_ID)
         }
     }
 }

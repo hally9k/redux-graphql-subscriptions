@@ -1,24 +1,21 @@
-import { GraphQLFloat, GraphQLNonNull, GraphQLString } from 'graphql'
+import { GraphQLFloat, GraphQLString } from 'graphql'
 
 export const time = (pubsub) => {
-    let TIME_SUBSCRIPTION_CHANNEL = '_'
+    let CHANNEL_ID = '_'
 
     setInterval(() => {
-        pubsub.publish(TIME_SUBSCRIPTION_CHANNEL, {
-            [TIME_SUBSCRIPTION_CHANNEL]: Date.now()
+        pubsub.publish(CHANNEL_ID, {
+            time: Date.now()
         })
     }, 1000)
 
     return {
         type: GraphQLFloat,
-        args: {
-            channel: { type: new GraphQLNonNull(GraphQLString) }
-        },
-        subscribe: (_, { channel }) => {
-            console.log(`Subscribed to ${channel}`)
-            TIME_SUBSCRIPTION_CHANNEL = channel
+        subscribe: (_, variables, ctx) => {
+            console.log(`Subscribed to ${ctx.id}`)
+            CHANNEL_ID = `time-${ctx.id}`
 
-            return pubsub.asyncIterator(TIME_SUBSCRIPTION_CHANNEL)
+            return pubsub.asyncIterator(CHANNEL_ID)
         }
     }
 }

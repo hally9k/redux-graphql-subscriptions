@@ -37,7 +37,11 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
     OPEN: 1
 }
 
-export function createMiddleware(url: string, options: *): * {
+export function createMiddleware(
+    url: string,
+    options: *,
+    protocols?: string | Array<string>
+): * {
     let actionQueue: Array<ReduxAction<SubscriptionPayload>> = [],
         wsClient: SubscriptionClient | null = null
     const unsubscriberMap: { [string]: (() => void) | null } = {}
@@ -56,11 +60,19 @@ export function createMiddleware(url: string, options: *): * {
             const { type }: * = action
 
             if (type === CONNECT && !wsClient) {
-                wsClient = new SubscriptionClient(url, options)
+                wsClient = new SubscriptionClient(url, options, null, protocols)
 
                 wsClient.onConnected(() => {
                     dispatchQueuedActions()
                 })
+
+                // TODO: These transport level handlers could be exposed in the middleware's api.
+                // wsClient.onDisconnected((x) => {
+                //     console.log('Disconnected: ', x)
+                // })
+                // wsClient.onError((x) => {
+                //     console.log('Errored: ', x)
+                // })
             }
             if (type === DISCONNECT && wsClient) {
                 wsClient.close()

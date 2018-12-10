@@ -1,34 +1,28 @@
 import { connect } from 'react-redux'
 import App from './color'
-import { colorEventReceived, failure, colorUnsubscribed } from '../reducer'
+import { colorEventReceived, colorUnsubscribed, failure } from '../reducer'
 import { subscribe, unsubscribe } from 'redux-graphql-subscriptions'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     color: state.color
 })
-
 const query = `
-    subscription Color($channel: String!) {
-        color(channel: $channel)
+    subscription Color {
+        color
     }
 `
-const PUB_SUB_CHANNEL = 'color'
-
-const variables = {
-    channel: PUB_SUB_CHANNEL
-}
-
+const subscriptionKey = 'color'
 const subscription = {
+    key: subscriptionKey,
     query,
-    variables,
+    variables: {},
     onMessage: colorEventReceived,
     onError: failure,
     onUnsubscribe: colorUnsubscribed
 }
-
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
     subscribe: () => dispatch(subscribe(subscription)),
-    unsubscribe: () => dispatch(unsubscribe(PUB_SUB_CHANNEL))
+    unsubscribe: () => dispatch(unsubscribe(subscriptionKey))
 })
 
 export default connect(

@@ -39,8 +39,16 @@ ws.listen(PORT, () => {
             execute,
             subscribe,
             schema,
+            // Drop the message Id into the ctx for the pubsub channel
+            onOperation: (message, params, webSocket) => ({
+                ...params,
+                context: { ...params.context, id: message.id }
+            }),
             onConnect: (connectionParams) => {
                 console.log('Connection established: ', connectionParams)
+            },
+            onDisconnect: (x, y) => {
+                console.log('Disconnected: ', x, y)
             }
         },
         {
