@@ -19,9 +19,10 @@ const mockOnConnected: * = jest.fn((callback: *) => {
     connectedEventHandler = callback
 })
 const mockGraphqlResponse: * = { data: {} }
+const mockErrors: Array<*> = [{ message: 'Help!' }]
 const mockGraphqlResponseWithError: * = {
     data: {},
-    error: [{ message: 'Help!' }]
+    errors: mockErrors
 }
 const mockSubscribe: * = jest.fn(
     ({ next }: *): * => {
@@ -36,6 +37,7 @@ const mockRequest: * = jest.fn(
         subscribe: mockSubscribe
     })
 )
+const mockWsClientStatus: * = WS_CLIENT_STATUS
 
 jest.mock(
     'subscriptions-transport-ws-hally9k',
@@ -45,7 +47,7 @@ jest.mock(
                 return {
                     request: mockRequest,
                     close: mockClose,
-                    status: WS_CLIENT_STATUS.CLOSED,
+                    status: mockWsClientStatus.CLOSED,
                     onConnected: mockOnConnected
                 }
             }
@@ -61,7 +63,7 @@ describe('Redux Subscriptions Middleware', () => {
     const dispatch: * = jest.fn()
     const getState: * = jest.fn()
     const next: * = jest.fn()
-    const middlewareFactory: * = createMiddleware(wsEndpointUrl, options)
+    const middlewareFactory: * = createMiddleware()
     // Hold a single instance of the closed over values
     const middleware: * = middlewareFactory({ dispatch, getState })(next)
     const query: string = 'mock-query'
@@ -101,13 +103,21 @@ describe('Redux Subscriptions Middleware', () => {
         })
 
         it('Handles the CONNECT action', () => {
-            middleware(connect())
+            middleware(
+                connect({
+                    url: wsEndpointUrl,
+                    options,
+                    protocols: 'scala-play-hack'
+                })
+            )
             expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledTimes(
                 1
             )
             expect(subscriptionsTransportWs.SubscriptionClient).toBeCalledWith(
                 wsEndpointUrl,
-                options
+                options,
+                null,
+                'scala-play-hack'
             )
             expect(mockOnConnected).toBeCalledWith(connectedEventHandler)
         })
@@ -128,6 +138,8 @@ describe('Redux Subscriptions Middleware', () => {
         let middleware: *
 
         beforeAll(() => {
+            jest.clearAllMocks()
+
             jest.resetModules()
             jest.doMock(
                 'subscriptions-transport-ws-hally9k',
@@ -137,7 +149,7 @@ describe('Redux Subscriptions Middleware', () => {
                             return {
                                 request: mockRequest,
                                 close: mockClose,
-                                status: WS_CLIENT_STATUS.OPEN,
+                                status: mockWsClientStatus.OPEN,
                                 onConnected: mockOnConnected
                             }
                         }
@@ -146,12 +158,18 @@ describe('Redux Subscriptions Middleware', () => {
             )
             const { createMiddleware }: * = require('./index.js')
 
-            middleware = createMiddleware(wsEndpointUrl, options)({
+            middleware = createMiddleware()({
                 dispatch,
                 getState
             })(next)
 
-            middleware(connect())
+            middleware(
+                connect({
+                    url: wsEndpointUrl,
+                    options,
+                    protocols: 'scala-play-hack'
+                })
+            )
         })
 
         afterEach(
@@ -180,12 +198,8 @@ describe('Redux Subscriptions Middleware', () => {
 
             // Dispatch the given onError action when receiving a graphql response with an error
             expect(mockOnError).toBeCalledTimes(1)
-            expect(mockOnError).toBeCalledWith(
-                mockGraphqlResponseWithError.error
-            )
-            expect(dispatch).toBeCalledWith(
-                mockOnError(mockGraphqlResponseWithError.error)
-            )
+            expect(mockOnError).toBeCalledWith(mockErrors)
+            expect(dispatch).toBeCalledWith(mockOnError(mockErrors))
 
             // Passes the action down the middleware chain
             expect(next).toBeCalledTimes(3)

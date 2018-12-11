@@ -1,11 +1,16 @@
 // @flow
-import type { SubscriptionPayload, WsClientStatusMap } from './index.js.flow'
+import type {
+    ConnectionPayload,
+    SubscriptionPayload,
+    WsClientStatusMap
+} from './index.js.flow'
 import { SubscriptionClient } from 'subscriptions-transport-ws-hally9k'
 
 const CONNECT: string = 'redux-graphql-subscriptions/CONNECT'
 
-export const connect: * = (): ReduxAction<*> => ({
-    type: CONNECT
+export const connect: * = (payload: *): ReduxAction<*> => ({
+    type: CONNECT,
+    payload
 })
 
 const DISCONNECT: string = 'redux-graphql-subscriptions/DISCONNECT'
@@ -32,9 +37,12 @@ export const unsubscribe: * = (key: string): ReduxAction<string> => ({
 
 const ERROR: string = 'redux-graphql-subscriptions/ERROR'
 
-export const error: * = (payload: GraphQlError): ReduxAction<GraphQlError> => ({
+export const error: * = (
+    payload: Array<GraphQLError>
+): ReduxAction<Array<GraphQLError>> => ({
     type: ERROR,
-    payload
+    payload,
+    error: true
 })
 
 export const WS_CLIENT_STATUS: WsClientStatusMap = {
@@ -44,11 +52,7 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
     OPEN: 1
 }
 
-export function createMiddleware(
-    url: string,
-    options: *,
-    protocols?: string | Array<string>
-): * {
+export function createMiddleware(): * {
     let actionQueue: Array<ReduxAction<SubscriptionPayload>> = [],
         wsClient: SubscriptionClient | null = null
     const unsubscriberMap: { [string]: (() => void) | null } = {}
@@ -67,6 +71,12 @@ export function createMiddleware(
             const { type }: * = action
 
             if (type === CONNECT && !wsClient) {
+                const {
+                    options,
+                    url,
+                    protocols
+                }: ConnectionPayload = (action.payload: any)
+
                 wsClient = new SubscriptionClient(url, options, null, protocols)
 
                 wsClient.onConnected(() => {

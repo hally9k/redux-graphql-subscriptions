@@ -10,8 +10,8 @@ export type GraphQLError = {
 }
 
 export type GraphQLResponse = {
-    data: *,
-    error?: Array<GraphQLError>
+    data?: *,
+    errors?: Array<GraphQLError>
 }
 
 // Redux
@@ -43,15 +43,28 @@ type ReduxAction<P = {}, M = {}> = {
 }
 
 // Exported Types
-// Exported Types
 export type SubscriptionPayload = {
     key: string,
-    onError?: (payload: GraphQLError) => ReduxAction<*> | Array<ReduxAction<*>>,
-    onMessage: (payload: GraphQLResponse) => ReduxAction<*> | Array<ReduxAction<*>>,
+    onError?: (
+        payload: Array<GraphQLError>
+    ) => ReduxAction<*> | Array<ReduxAction<*>>,
+    onMessage: (
+        payload: GraphQLResponse
+    ) => ReduxAction<*> | Array<ReduxAction<*>>,
     onUnsubscribe?: (payload: string) => ReduxAction<*> | Array<ReduxAction<*>>,
     query: string,
     variables?: {}
 }
+
+export type ConnectionPayload = {
+    options: {
+        connectionOptions?: {},
+        reconnect?: boolean
+    },
+    protocols?: string | Array<string>,
+    url: string
+}
+
 export type WsClientStatusMap = {
     CLOSED: 3,
     CLOSING: 2,
@@ -60,7 +73,10 @@ export type WsClientStatusMap = {
 }
 
 // Internal Types
-type ReduxActionIn = ReduxAction<SubscriptionPayload> | ReduxAction<string>
+type ReduxActionIn =
+    | ReduxAction<SubscriptionPayload>
+    | ReduxAction<ConnectionPayload>
+    | ReduxAction<string>
 
 type ReduxActionOut =
     | ReduxAction<GraphQLResponse>
@@ -70,16 +86,15 @@ type ReduxActionOut =
 // Module
 declare var WS_CLIENT_STATUS: WsClientStatusMap
 
-declare function createMiddleware<AppState>(
-    url: string,
-    options: {
-        connectionOptions?: {},
-        reconnect?: boolean
-    },
-    protocols?: string | Array<string>
-): ReduxMiddleware<AppState, ReduxActionIn, ReduxActionOut>
+declare function createMiddleware<AppState>(): ReduxMiddleware<
+    AppState,
+    ReduxActionIn,
+    ReduxActionOut
+>
 
-declare function connect(): ReduxAction<*>
+declare function connect(
+    payload: ConnectionPayload
+): ReduxAction<ConnectionPayload>
 
 declare function disconnect(): ReduxAction<*>
 
