@@ -98,7 +98,15 @@ export function createMiddleware(): * {
             if (type === SUBSCRIBE && wsClient) {
                 if (wsClient.status === WS_CLIENT_STATUS.OPEN) {
                     const payload: SubscriptionPayload = (action.payload: any)
-                    const { key, onUnsubscribe }: SubscriptionPayload = payload
+                    const {
+                        key,
+                        onUnsubscribe,
+                        onSubscribing
+                    }: SubscriptionPayload = payload
+
+                    if (onSubscribing) {
+                        dispatch(onSubscribing())
+                    }
 
                     if (!unsubscriberMap[key]) {
                         const { unsubscribe }: * = wsSubscribe(
