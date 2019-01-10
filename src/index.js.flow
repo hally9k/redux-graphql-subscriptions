@@ -47,12 +47,14 @@ export type SubscriptionPayload = {
     key: string,
     onError?: (
         payload: Array<GraphQLError>
-    ) => ReduxAction<*> | Array<ReduxAction<*>>,
+    ) => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
     onMessage: (
         payload: GraphQLResponse
-    ) => ReduxAction<*> | Array<ReduxAction<*>>,
-    onSubscribing?: () => ReduxAction<*> | Array<ReduxAction<*>>,
-    onUnsubscribe?: (payload: string) => ReduxAction<*> | Array<ReduxAction<*>>,
+    ) => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+    onSubscribing?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+    onUnsubscribe?: (
+        payload: string
+    ) => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
     query: string,
     variables?: {}
 }
