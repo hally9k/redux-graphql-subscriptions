@@ -73,23 +73,39 @@ export function createMiddleware(): * {
             if (type === CONNECT && !wsClient) {
                 const {
                     options,
+                    handlers,
                     url,
                     protocols
                 }: ConnectionPayload = (action.payload: any)
 
                 wsClient = new SubscriptionClient(url, options, null, protocols)
 
-                wsClient.onConnected(() => {
+                wsClient.onConnected((x: any) => {
                     dispatchQueuedActions()
+                    if (handlers.onConnected) {
+                        handlers.onConnected(x)
+                    }
                 })
 
-                // TODO: These transport level handlers could be exposed in the middleware's api.
-                // wsClient.onDisconnected((x) => {
-                //     console.log('Disconnected: ', x)
-                // })
-                // wsClient.onError((x) => {
-                //     console.log('Errored: ', x)
-                // })
+                if (handlers.onConnecting) {
+                    wsClient.onConnecting(handlers.onConnecting)
+                }
+
+                if (handlers.onDisconnected) {
+                    wsClient.onDisconnected(handlers.onDisconnected)
+                }
+
+                if (handlers.onError) {
+                    wsClient.onError(handlers.onError)
+                }
+
+                if (handlers.onReconnected) {
+                    wsClient.onReconnected(handlers.onReconnected)
+                }
+
+                if (handlers.onReconnecting) {
+                    wsClient.onReconnecting(handlers.onReconnecting)
+                }
             }
             if (type === DISCONNECT && wsClient) {
                 actionQueue = []
