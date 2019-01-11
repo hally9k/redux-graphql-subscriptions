@@ -54,8 +54,8 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
 
 export function createMiddleware(): * {
     let actionQueue: Array<ReduxAction<SubscriptionPayload>> = [],
+        unsubscriberMap: { [string]: (() => void) | null } = {},
         wsClient: SubscriptionClient | null = null
-    const unsubscriberMap: { [string]: (() => void) | null } = {}
 
     return ({ dispatch }: *): * => {
         function dispatchQueuedActions() {
@@ -92,6 +92,8 @@ export function createMiddleware(): * {
                 // })
             }
             if (type === DISCONNECT && wsClient) {
+                actionQueue = []
+                unsubscriberMap = {}
                 wsClient.close()
                 wsClient = null
             }
