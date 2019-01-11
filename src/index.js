@@ -5,6 +5,16 @@ import type {
     WsClientStatusMap
 } from './index.js.flow'
 import { SubscriptionClient } from 'subscriptions-transport-ws-hally9k'
+type HandlerKey =
+    | 'onConnected'
+    | 'onConnecting'
+    | 'onDisconnected'
+    | 'onError'
+    | 'onReconnected'
+    | 'onReconnecting'
+
+type FunctionMap = { [string]: (() => void) | null }
+type HandlerMap = { [HandlerKey]: ((any) => void) | null }
 
 const CONNECT: string = 'redux-graphql-subscriptions/CONNECT'
 
@@ -54,8 +64,17 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
 
 export function createMiddleware(): * {
     let actionQueue: Array<ReduxAction<SubscriptionPayload>> = [],
-        unsubscriberMap: { [string]: (() => void) | null } = {},
+        unsubscriberMap: FunctionMap = {},
         wsClient: SubscriptionClient | null = null
+
+    const handlerMap: HandlerMap = {
+        onConnected: null,
+        onConnecting: null,
+        onDisconnected: null,
+        onError: null,
+        onReconnected: null,
+        onReconnecting: null
+    }
 
     return ({ dispatch }: *): * => {
         function dispatchQueuedActions() {
@@ -80,36 +99,46 @@ export function createMiddleware(): * {
 
                 wsClient = new SubscriptionClient(url, options, null, protocols)
 
-                wsClient.onConnected((x: any) => {
+                handlerMap.onConnected = wsClient.onConnected((x: any) => {
                     dispatchQueuedActions()
-                    if (handlers.onConnected) {
+                    if (handlers && handlers.onConnected) {
                         handlers.onConnected(x)
                     }
                 })
+                if (handlers) {
+                    if (handlers.onConnecting) {
+                        handlerMap.onConnecting = wsClient.onConnecting(
+                            handlers.onConnecting
+                        )
+                    }
 
-                if (handlers.onConnecting) {
-                    wsClient.onConnecting(handlers.onConnecting)
-                }
+                    if (handlers.onDisconnected) {
+                        handlerMap.onDisconnected = wsClient.onDisconnected(
+                            handlers.onDisconnected
+                        )
+                    }
 
-                if (handlers.onDisconnected) {
-                    wsClient.onDisconnected(handlers.onDisconnected)
-                }
+                    if (handlers.onError) {
+                        handlerMap.onError = wsClient.onError(handlers.onError)
+                    }
 
-                if (handlers.onError) {
-                    wsClient.onError(handlers.onError)
-                }
+                    if (handlers.onReconnected) {
+                        handlerMap.onReconnected = wsClient.onReconnected(
+                            handlers.onReconnected
+                        )
+                    }
 
-                if (handlers.onReconnected) {
-                    wsClient.onReconnected(handlers.onReconnected)
-                }
-
-                if (handlers.onReconnecting) {
-                    wsClient.onReconnecting(handlers.onReconnecting)
+                    if (handlers.onReconnecting) {
+                        handlerMap.onReconnecting = wsClient.onReconnecting(
+                            handlers.onReconnecting
+                        )
+                    }
                 }
             }
             if (type === DISCONNECT && wsClient) {
                 actionQueue = []
                 unsubscriberMap = {}
+                deregisterHandlers(handlerMap)
                 wsClient.close()
                 wsClient = null
             }
@@ -172,6 +201,15 @@ const wsSubscribe: * = (
             }
 
             return dispatch(onMessage(res))
+        }
+    })
+}
+
+function deregisterHandlers(handlerMap: HandlerMap) {
+    Object.keys(handlerMap).forEach((handlerkey: HandlerKey) => {
+        if (typeof handlerMap[handlerkey] === 'function') {
+            (handlerMap[handlerkey]: any)() // Flow struggles with this being narrowed to a function...
+            handlerMap[handlerkey] = null
         }
     })
 }
