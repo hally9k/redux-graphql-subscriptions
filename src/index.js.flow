@@ -61,12 +61,12 @@ export type SubscriptionPayload = {
 
 export type ConnectionPayload = {
     handlers?: {
-        onConnected?: () => void,
-        onConnecting?: () => void,
-        onDisconnected?: () => void,
-        onError?: () => void,
-        onReconnected?: () => void,
-        onReconnecting?: () => void
+        onConnected?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+        onConnecting?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+        onDisconnected?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+        onError?: (any) => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+        onReconnected?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+        onReconnecting?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>
     },
     options: {
         connectionOptions?: {},

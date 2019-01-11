@@ -101,36 +101,41 @@ export function createMiddleware(): * {
 
                 handlerMap.onConnected = wsClient.onConnected(() => {
                     dispatchQueuedActions()
-                    if (handlers && handlers.onConnected) {
-                        handlers.onConnected()
+                    if (
+                        handlers &&
+                        typeof handlers.onConnected === 'function'
+                    ) {
+                        dispatch(handlers.onConnected())
                     }
                 })
                 if (handlers) {
-                    if (handlers.onConnecting) {
+                    if (typeof handlers.onConnecting === 'function') {
                         handlerMap.onConnecting = wsClient.onConnecting(
-                            handlers.onConnecting
+                            (): * => dispatch((handlers.onConnecting: any)())
                         )
                     }
 
-                    if (handlers.onDisconnected) {
+                    if (typeof handlers.onDisconnected === 'function') {
                         handlerMap.onDisconnected = wsClient.onDisconnected(
-                            handlers.onDisconnected
+                            (): * => dispatch((handlers.onDisconnected: any)())
                         )
                     }
 
-                    if (handlers.onError) {
-                        handlerMap.onError = wsClient.onError(handlers.onError)
+                    if (typeof handlers.onError === 'function') {
+                        handlerMap.onError = wsClient.onError(
+                            (): * => dispatch((handlers.onError: any)())
+                        )
                     }
 
-                    if (handlers.onReconnected) {
+                    if (typeof handlers.onReconnected === 'function') {
                         handlerMap.onReconnected = wsClient.onReconnected(
-                            handlers.onReconnected
+                            (): * => dispatch((handlers.onReconnected: any)())
                         )
                     }
 
-                    if (handlers.onReconnecting) {
+                    if (typeof handlers.onReconnecting === 'function') {
                         handlerMap.onReconnecting = wsClient.onReconnecting(
-                            handlers.onReconnecting
+                            (): * => dispatch((handlers.onReconnecting: any)())
                         )
                     }
                 }
