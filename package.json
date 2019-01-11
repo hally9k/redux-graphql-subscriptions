@@ -1,6 +1,6 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "1.0.0-alpha.35",
+  "version": "1.0.0-alpha.36",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "repository": {
     "type": "git",

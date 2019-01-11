@@ -14,7 +14,7 @@ type HandlerKey =
     | 'onReconnecting'
 
 type FunctionMap = { [string]: (() => void) | null }
-type HandlerMap = { [HandlerKey]: ((any) => void) | null }
+type HandlerMap = { [HandlerKey]: (() => void) | null }
 
 const CONNECT: string = 'redux-graphql-subscriptions/CONNECT'
 
@@ -99,10 +99,10 @@ export function createMiddleware(): * {
 
                 wsClient = new SubscriptionClient(url, options, null, protocols)
 
-                handlerMap.onConnected = wsClient.onConnected((x: any) => {
+                handlerMap.onConnected = wsClient.onConnected(() => {
                     dispatchQueuedActions()
                     if (handlers && handlers.onConnected) {
-                        handlers.onConnected(x)
+                        handlers.onConnected()
                     }
                 })
                 if (handlers) {

@@ -61,12 +61,12 @@ export type SubscriptionPayload = {
 
 export type ConnectionPayload = {
     handlers?: {
-        onConnected?: (any) => void,
-        onConnecting?: (any) => void,
-        onDisconnected?: (any) => void,
-        onError?: (any) => void,
-        onReconnected?: (any) => void,
-        onReconnecting?: (any) => void
+        onConnected?: () => void,
+        onConnecting?: () => void,
+        onDisconnected?: () => void,
+        onError?: () => void,
+        onReconnected?: () => void,
+        onReconnecting?: () => void
     },
     options: {
         connectionOptions?: {},
