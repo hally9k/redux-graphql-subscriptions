@@ -147,8 +147,8 @@ export function createMiddleware(): * {
                 wsClient.close()
                 wsClient = null
             }
-            if (type === SUBSCRIBE && wsClient) {
-                if (wsClient.status === WS_CLIENT_STATUS.OPEN) {
+            if (type === SUBSCRIBE) {
+                if (wsClient && wsClient.status === WS_CLIENT_STATUS.OPEN) {
                     const payload: SubscriptionPayload = (action.payload: any)
                     const {
                         key,
