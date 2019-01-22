@@ -52,9 +52,7 @@ export type SubscriptionPayload = {
         payload: GraphQLResponse
     ) => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
     onSubscribing?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
-    onUnsubscribe?: (
-        payload: string
-    ) => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+    onUnsubscribe?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
     query: string,
     variables?: {}
 }
