@@ -58,6 +58,7 @@ export type SubscriptionPayload = {
 }
 
 export type ConnectionPayload = {
+    disconnectionTimeout?: number,
     handlers?: {
         onConnected?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
         onConnecting?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
@@ -67,13 +68,13 @@ export type ConnectionPayload = {
         onReconnecting?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>
     },
     options: {
+        connectionCallback?: (Error) => void,
         connectionOptions?: {},
         reconnect?: boolean
     },
     protocols?: string | Array<string>,
     url: string
 }
-
 export type WsClientStatusMap = {
     CLOSED: 3,
     CLOSING: 2,

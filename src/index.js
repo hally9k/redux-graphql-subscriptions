@@ -64,6 +64,7 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
 
 export function createMiddleware(): * {
     let actionQueue: Array<ReduxAction<SubscriptionPayload>> = [],
+        disconnectionTimeoutId: number | null,
         unsubscriberMap: FunctionMap = {},
         wsClient: SubscriptionClient | null = null
 
@@ -94,7 +95,8 @@ export function createMiddleware(): * {
                     options,
                     handlers,
                     url,
-                    protocols
+                    protocols,
+                    disconnectionTimeout = 0
                 }: ConnectionPayload = (action.payload: any)
 
                 wsClient = new SubscriptionClient(url, options, null, protocols)
@@ -111,13 +113,30 @@ export function createMiddleware(): * {
                 if (handlers) {
                     if (typeof handlers.onConnecting === 'function') {
                         handlerMap.onConnecting = wsClient.onConnecting(
-                            (): * => dispatch((handlers.onConnecting: any)())
+                            (): * => {
+                                if (disconnectionTimeoutId) {
+                                    clearTimeout(disconnectionTimeoutId)
+                                    disconnectionTimeoutId = null
+                                }
+
+                                dispatch((handlers.onConnecting: any)())
+                            }
                         )
                     }
 
                     if (typeof handlers.onDisconnected === 'function') {
                         handlerMap.onDisconnected = wsClient.onDisconnected(
-                            (): * => dispatch((handlers.onDisconnected: any)())
+                            () => {
+                                if (!disconnectionTimeoutId) {
+                                    disconnectionTimeoutId = setTimeout(
+                                        (): * =>
+                                            dispatch(
+                                                (handlers.onDisconnected: any)()
+                                            ),
+                                        disconnectionTimeout
+                                    )
+                                }
+                            }
                         )
                     }
 
@@ -129,7 +148,13 @@ export function createMiddleware(): * {
 
                     if (typeof handlers.onReconnected === 'function') {
                         handlerMap.onReconnected = wsClient.onReconnected(
-                            (): * => dispatch((handlers.onReconnected: any)())
+                            (): * => {
+                                if (disconnectionTimeoutId) {
+                                    clearTimeout(disconnectionTimeoutId)
+                                    disconnectionTimeoutId = null
+                                }
+                                dispatch((handlers.onReconnected: any)())
+                            }
                         )
                     }
 
