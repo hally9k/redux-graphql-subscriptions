@@ -68,7 +68,7 @@ export type ConnectionPayload = {
         onReconnecting?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>
     },
     options: {
-        connectionCallback?: (Error) => void,
+        connectionCallback?: (?Error) => void,
         connectionOptions?: {},
         reconnect?: boolean
     },

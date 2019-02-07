@@ -64,7 +64,7 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
 
 export function createMiddleware(): * {
     let actionQueue: Array<ReduxAction<SubscriptionPayload>> = [],
-        disconnectionTimeoutId: number | null,
+        disconnectionTimeoutId: TimeoutID | null,
         unsubscriberMap: FunctionMap = {},
         wsClient: SubscriptionClient | null = null
 
@@ -195,7 +195,7 @@ export function createMiddleware(): * {
                         unsubscriberMap[key] = () => {
                             unsubscribe()
                             if (onUnsubscribe) {
-                                dispatch(onUnsubscribe(key))
+                                dispatch(onUnsubscribe())
                             }
                         }
                     }
