@@ -1,6 +1,6 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "1.0.0-alpha.42",
+  "version": "1.0.0-alpha.43",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
     "@babel/core": "^7.1.6",
     "@babel/node": "^7.0.0",
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+    "@babel/plugin-transform-regenerator": "^7.4.0",
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-flow": "^7.0.0",
     "a": "^2.1.2",

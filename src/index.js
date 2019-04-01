@@ -223,7 +223,7 @@ const wsSubscribe: * = (
     { query, variables, onMessage, onError }: SubscriptionPayload
 ): * => {
     return client.request({ query, variables }).subscribe({
-        next: (res: GraphQLResponse): * => {
+        next: async(res: GraphQLResponse): * => {
             if (res.errors) {
                 return dispatch(
                     onError ? onError(res.errors) : error(res.errors)
