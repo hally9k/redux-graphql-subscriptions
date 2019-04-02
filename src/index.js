@@ -1,4 +1,5 @@
 // @flow
+import 'regenerator-runtime/runtime'
 import type {
     ConnectionPayload,
     SubscriptionPayload,
@@ -225,13 +226,22 @@ const wsSubscribe: * = (
     return client.request({ query, variables }).subscribe({
         next: async(res: GraphQLResponse): * => {
             if (res.errors) {
-                return dispatch(
+                return await dispatchNonBlocking(
+                    dispatch,
                     onError ? onError(res.errors) : error(res.errors)
                 )
             }
 
-            return dispatch(onMessage(res))
+            return await dispatchNonBlocking(dispatch, onMessage(res))
         }
+    })
+}
+
+async function dispatchNonBlocking(dispatch: *, action: *): Promise<*> {
+    return new Promise((resolve: *) => {
+        dispatch(action)
+
+        resolve()
     })
 }
 
