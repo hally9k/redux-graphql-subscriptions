@@ -63,6 +63,9 @@ export type ConnectionPayload = {
         onConnected?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
         onConnecting?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
         onDisconnected?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
+        onDisconnectionTimeout?: () =>
+            | ReduxAction<*, *>
+            | Array<ReduxAction<*, *>>,
         onError?: (any) => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
         onReconnected?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>,
         onReconnecting?: () => ReduxAction<*, *> | Array<ReduxAction<*, *>>
