@@ -10,6 +10,7 @@ type HandlerKey =
     | 'onConnected'
     | 'onConnecting'
     | 'onDisconnected'
+    | 'onDisconnectionTimeout'
     | 'onError'
     | 'onReconnected'
     | 'onReconnecting'
@@ -73,6 +74,7 @@ export function createMiddleware(): * {
         onConnected: null,
         onConnecting: null,
         onDisconnected: null,
+        onDisconnectionTimeout: null,
         onError: null,
         onReconnected: null,
         onReconnecting: null
@@ -128,11 +130,19 @@ export function createMiddleware(): * {
                     if (typeof handlers.onDisconnected === 'function') {
                         handlerMap.onDisconnected = wsClient.onDisconnected(
                             () => {
+                                dispatch((handlers.onDisconnected: any)())
+                            }
+                        )
+                    }
+
+                    if (typeof handlers.onDisconnectionTimeout === 'function') {
+                        handlerMap.onDisconnectionTimeout = wsClient.onDisconnected(
+                            () => {
                                 if (!disconnectionTimeoutId) {
                                     disconnectionTimeoutId = setTimeout(
                                         (): * =>
                                             dispatch(
-                                                (handlers.onDisconnected: any)()
+                                                (handlers.onDisconnectionTimeout: any)()
                                             ),
                                         disconnectionTimeout
                                     )
