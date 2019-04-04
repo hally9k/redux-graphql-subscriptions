@@ -131,21 +131,20 @@ export function createMiddleware(): * {
                         handlerMap.onDisconnected = wsClient.onDisconnected(
                             () => {
                                 dispatch((handlers.onDisconnected: any)())
-                            }
-                        )
-                    }
 
-                    if (typeof handlers.onDisconnectionTimeout === 'function') {
-                        handlerMap.onDisconnectionTimeout = wsClient.onDisconnected(
-                            () => {
-                                if (!disconnectionTimeoutId) {
-                                    disconnectionTimeoutId = setTimeout(
-                                        (): * =>
-                                            dispatch(
-                                                (handlers.onDisconnectionTimeout: any)()
-                                            ),
-                                        disconnectionTimeout
-                                    )
+                                if (
+                                    typeof handlers.onDisconnectionTimeout ===
+                                    'function'
+                                ) {
+                                    if (!disconnectionTimeoutId) {
+                                        disconnectionTimeoutId = setTimeout(
+                                            (): * =>
+                                                dispatch(
+                                                    (handlers.onDisconnectionTimeout: any)()
+                                                ),
+                                            disconnectionTimeout
+                                        )
+                                    }
                                 }
                             }
                         )
