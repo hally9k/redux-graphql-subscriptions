@@ -1,6 +1,7 @@
-import { FluxStandardAction as Action } from 'flux-standard-action'
+import {
+    FSA as Action  } from '@vital-software/flux-standard-action'
 import { ExecutionResult as GraphQLResponse, GraphQLError } from 'graphql'
-import { SubscriptionClient } from 'subscriptions-transport-ws-hally9k'
+import { SubscriptionClient, ClientOptions } from 'subscriptions-transport-ws-hally9k'
 import { Store, Dispatch } from 'redux'
 
 type FunctionMap = { [key: string]: Function | null }
@@ -13,16 +14,18 @@ type WsClientStatusMap = {
     OPEN: 1
 }
 
+type ActionOrArrayOfActions = Action<any, any, any> | Array<Action<any, any, any>>
+
 export type SubscriptionPayload = {
     key: string,
     onError?: (
         payload: readonly GraphQLError[]
-    ) => Action<any> & Array<Action<any>>,
+    ) => ActionOrArrayOfActions,
     onMessage: (
         payload: GraphQLResponse
-    ) => Action<any> & Array<Action<any>>,
-    onSubscribing?: () => Action<any> & Array<Action<any>>,
-    onUnsubscribe?: () => Action<any> & Array<Action<any>>,
+    ) => ActionOrArrayOfActions,
+    onSubscribing?: () => ActionOrArrayOfActions,
+    onUnsubscribe?: () => ActionOrArrayOfActions,
     query: string,
     variables?: {}
 }
@@ -30,64 +33,70 @@ export type SubscriptionPayload = {
 export type ConnectionPayload = {
     disconnectionTimeout?: number,
     handlers?: {
-        onConnected?: () => Action<any> & Array<Action<any>>,
-        onConnecting?: () => Action<any> & Array<Action<any>>,
-        onDisconnected?: () => Action<any> & Array<Action<any>>,
+        onConnected?: () => ActionOrArrayOfActions,
+        onConnecting?: () => ActionOrArrayOfActions,
+        onDisconnected?: () => ActionOrArrayOfActions,
         onDisconnectionTimeout?: () =>
-            & Action<any>
-            & Array<Action<any>>,
-        onError?: (errors?: any) => Action<any> & Array<Action<any>>,
-        onReconnected?: () => Action<any> & Array<Action<any>>,
-        onReconnecting?: () => Action<any> & Array<Action<any>>
+            | Action<any, any, any>
+            | Array<Action<any, any, any>>,
+        onError?: (errors?: any) => ActionOrArrayOfActions,
+        onReconnected?: () => ActionOrArrayOfActions,
+        onReconnecting?: () => ActionOrArrayOfActions
     },
-    options: {
-        connectionCallback?: any, //(?Error) => void,
-        connectionOptions?: {},
-        reconnect?: boolean
-    },
+    options: ClientOptions,
     protocols?: string | Array<string>,
     url: string
 }
 
 
-const CONNECT: string = 'redux-graphql-subscriptions/CONNECT'
+const CONNECT = 'redux-graphql-subscriptions/CONNECT'
+type ConnectAction = Action<typeof CONNECT, ConnectionPayload>
 
-export const connect = (payload: ConnectionPayload): Action<ConnectionPayload> => ({
+export const connect = (payload: ConnectionPayload): ConnectAction => ({
     type: CONNECT,
     payload
 })
 
-const DISCONNECT: string = 'redux-graphql-subscriptions/DISCONNECT'
+const DISCONNECT = 'redux-graphql-subscriptions/DISCONNECT'
+type DisconnectAction = Action<typeof DISCONNECT>
 
-export const disconnect = (): Action<any> => ({
+export const disconnect = (): DisconnectAction => ({
     type: DISCONNECT
 })
 
-const SUBSCRIBE: string = 'redux-graphql-subscriptions/SUBSCRIBE'
+const SUBSCRIBE = 'redux-graphql-subscriptions/SUBSCRIBE'
+export type SubscribeAction = Action<typeof SUBSCRIBE, SubscriptionPayload>
+export type SubscribeActionCreator = (subscription: SubscriptionPayload) => SubscribeAction
 
-export const subscribe = (
-    subscription: SubscriptionPayload
-): Action<SubscriptionPayload> => ({
+export const subscribe: SubscribeActionCreator = (
+    subscription
+) => ({
     type: SUBSCRIBE,
     payload: subscription
 })
 
-const UNSUBSCRIBE: string = 'redux-graphql-subscriptions/UNSUBSCRIBE'
+const UNSUBSCRIBE = 'redux-graphql-subscriptions/UNSUBSCRIBE'
+export type UnsubscribeAction = Action<typeof UNSUBSCRIBE, string>
+export type UnubscribeActionCreator = (key: string) => UnsubscribeAction
 
-export const unsubscribe = (key: string): Action<string> => ({
+export const unsubscribe: UnubscribeActionCreator = (key): UnsubscribeAction => ({
     type: UNSUBSCRIBE,
     payload: key
 })
 
-const ERROR: string = 'redux-graphql-subscriptions/ERROR'
+const ERROR = 'redux-graphql-subscriptions/ERROR'
+type ErrorAction = Action<typeof ERROR, readonly GraphQLError[]>
+
 
 export const error = (
     payload: readonly GraphQLError[]
-): Action<readonly GraphQLError[]> => ({
-    type: ERROR,
-    payload,
-    error: true
-})
+    ): ErrorAction  => ({
+        type: ERROR,
+        payload,
+        error: true
+    })
+    
+export type ReduxGraphQLSubscriptionActionUnion = ConnectAction | DisconnectAction | SubscribeAction | UnsubscribeAction | ErrorAction
 
 export const WS_CLIENT_STATUS: WsClientStatusMap = {
     CLOSED: 3,
@@ -97,7 +106,7 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
 }
 
 export function createMiddleware<S>() {
-    let actionQueue: Array<Action<SubscriptionPayload>> = [],
+    let actionQueue: Array<ReduxGraphQLSubscriptionActionUnion> = [],
         disconnectionTimeoutId: NodeJS.Timeout | null,
         unsubscriberMap: FunctionMap = {},
         wsClient: SubscriptionClient | null = null
@@ -113,16 +122,7 @@ export function createMiddleware<S>() {
     }
 
     return ({ dispatch }: Store<S>) => {
-        function dispatchQueuedActions() {
-            const queueToDispatch: Array<Action<SubscriptionPayload>> = [
-                ...actionQueue
-            ]
-
-            actionQueue = []
-            queueToDispatch.forEach(dispatch)
-        }
-
-        return (next: Dispatch<Action<any>>) => (action: Action<any>) => {
+        return (next: Dispatch<Action<any, any, any>>) => (action: ReduxGraphQLSubscriptionActionUnion) => {
             const { type } = action
 
             if (type === CONNECT && !wsClient) {
@@ -132,91 +132,22 @@ export function createMiddleware<S>() {
                     url,
                     protocols,
                     disconnectionTimeout = 0
-                }: ConnectionPayload = action.payload
+                }: ConnectionPayload = action.payload as ConnectionPayload // FIXME: Can't work out why this can't discriminate between the types
 
                 wsClient = new SubscriptionClient(url, options, null, protocols)
-
-                handlerMap.onConnected = wsClient.onConnected(() => {
-                    dispatchQueuedActions()
-                    if (
-                        handlers &&
-                        typeof handlers.onConnected === 'function'
-                    ) {
-                        dispatch(handlers.onConnected())
-                    }
-                })
-                if (handlers) {
-                    if (typeof handlers.onConnecting === 'function') {
-                        handlerMap.onConnecting = wsClient.onConnecting(
-                            () => {
-                                if (disconnectionTimeoutId) {
-                                    clearTimeout(disconnectionTimeoutId)
-                                    disconnectionTimeoutId = null
-                                }
-
-                                dispatch(handlers.onConnecting())
-                            }
-                        )
-                    }
-
-                    if (typeof handlers.onDisconnected === 'function') {
-                        handlerMap.onDisconnected = wsClient.onDisconnected(
-                            () => {
-                                dispatch(handlers.onDisconnected())
-
-                                if (
-                                    typeof handlers.onDisconnectionTimeout ===
-                                    'function'
-                                ) {
-                                    if (!disconnectionTimeoutId) {
-                                        disconnectionTimeoutId = setTimeout(
-                                            () =>
-                                                dispatch(
-                                                    handlers.onDisconnectionTimeout()
-                                                ),
-                                            disconnectionTimeout
-                                        )
-                                    }
-                                }
-                            }
-                        )
-                    }
-
-                    if (typeof handlers.onError === 'function') {
-                        handlerMap.onError = wsClient.onError(
-                            () => dispatch(handlers.onError())
-                        )
-                    }
-
-                    if (typeof handlers.onReconnected === 'function') {
-                        handlerMap.onReconnected = wsClient.onReconnected(
-                            () => {
-                                if (disconnectionTimeoutId) {
-                                    clearTimeout(disconnectionTimeoutId)
-                                    disconnectionTimeoutId = null
-                                }
-                                dispatch(handlers.onReconnected())
-                            }
-                        )
-                    }
-
-                    if (typeof handlers.onReconnecting === 'function') {
-                        handlerMap.onReconnecting = wsClient.onReconnecting(
-                            () => dispatch(handlers.onReconnecting())
-                        )
-                    }
-                }
+                registerHandlers(handlers, disconnectionTimeout)
+                
             }
             if (type === DISCONNECT && wsClient) {
                 actionQueue = []
                 unsubscriberMap = {}
-                deregisterHandlers(handlerMap)
+                deregisterHandlers()
                 wsClient.close()
                 wsClient = null
             }
             if (type === SUBSCRIBE) {
                 if (wsClient && wsClient.status === WS_CLIENT_STATUS.OPEN) {
-                    const payload: SubscriptionPayload = action.payload
+                    const payload: SubscriptionPayload = action.payload as SubscriptionPayload // FIXME: Can't work out why this can't discriminate between the types
                     const {
                         key,
                         onUnsubscribe,
@@ -224,7 +155,7 @@ export function createMiddleware<S>() {
                     }: SubscriptionPayload = payload
 
                     if (onSubscribing) {
-                        dispatch(onSubscribing())
+                        dispatchActionOrArrayOfActions(onSubscribing())
                     }
 
                     if (!unsubscriberMap[key]) {
@@ -237,7 +168,7 @@ export function createMiddleware<S>() {
                         unsubscriberMap[key] = () => {
                             unsubscribe()
                             if (onUnsubscribe) {
-                                dispatch(onUnsubscribe())
+                                dispatchActionOrArrayOfActions(onUnsubscribe())
                             }
                         }
                     }
@@ -246,7 +177,7 @@ export function createMiddleware<S>() {
                 }
             }
             if (type === UNSUBSCRIBE && wsClient) {
-                const key: string = action.payload
+                const key: string = action.payload as string // FIXME: Can't work out why this can't discriminate between the types
 
                 if (typeof unsubscriberMap[key] === 'function') {
                     unsubscriberMap[key]()
@@ -256,30 +187,134 @@ export function createMiddleware<S>() {
 
             return next(action)
         }
+        
+        // Helpers
+        function registerHandlers(handlers: HandlerMap, disconnectionTimeout: number) {
+            handlerMap.onConnected = wsClient.onConnected(() => {
+                dispatchQueuedActions()
+                if (
+                    handlers &&
+                    typeof handlers.onConnected === 'function'
+                ) {
+                    dispatch(handlers.onConnected())
+                }
+            })
+            if (handlers) {
+                if (typeof handlers.onConnecting === 'function') {
+                    handlerMap.onConnecting = wsClient.onConnecting(
+                        () => {
+                            if (disconnectionTimeoutId) {
+                                clearTimeout(disconnectionTimeoutId)
+                                disconnectionTimeoutId = null
+                            }
+        
+                            dispatch(handlers.onConnecting())
+                        }
+                    )
+                }
+        
+                if (typeof handlers.onDisconnected === 'function') {
+                    handlerMap.onDisconnected = wsClient.onDisconnected(
+                        () => {
+                            dispatch(handlers.onDisconnected())
+        
+                            if (
+                                typeof handlers.onDisconnectionTimeout ===
+                                'function'
+                            ) {
+                                if (!disconnectionTimeoutId) {
+                                    disconnectionTimeoutId = setTimeout(
+                                        () =>
+                                            dispatch(
+                                                handlers.onDisconnectionTimeout()
+                                            ),
+                                        disconnectionTimeout
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
+        
+                if (typeof handlers.onError === 'function') {
+                    handlerMap.onError = wsClient.onError(
+                        () => dispatch(handlers.onError())
+                    )
+                }
+        
+                if (typeof handlers.onReconnected === 'function') {
+                    handlerMap.onReconnected = wsClient.onReconnected(
+                        () => {
+                            if (disconnectionTimeoutId) {
+                                clearTimeout(disconnectionTimeoutId)
+                                disconnectionTimeoutId = null
+                            }
+                            dispatch(handlers.onReconnected())
+                        }
+                    )
+                }
+        
+                if (typeof handlers.onReconnecting === 'function') {
+                    handlerMap.onReconnecting = wsClient.onReconnecting(
+                        () => dispatch(handlers.onReconnecting())
+                    )
+                }
+            }
+        }
+
+        function deregisterHandlers() {
+            Object.keys(handlerMap).forEach(handlerkey => {
+                if (typeof handlerMap[handlerkey] === 'function') {
+                    handlerMap[handlerkey]()
+                    handlerMap[handlerkey] = null
+                }
+            })
+        }
+
+        function dispatchQueuedActions() {
+            const queueToDispatch: Array<ReduxGraphQLSubscriptionActionUnion> = [
+                ...actionQueue
+            ]
+
+            actionQueue = []
+            queueToDispatch.forEach(dispatch)
+        }
+
+        function dispatchActionOrArrayOfActions(actions: ActionOrArrayOfActions) {
+            if(Array.isArray(actions)) {
+                actions.forEach(dispatch)
+            } else {
+                dispatch(actions)
+            }
+        }
+
+        function wsSubscribe(
+            client: SubscriptionClient,
+            dispatch: Dispatch<Action<any, any, any>>,
+            { query, variables, onMessage, onError }: SubscriptionPayload
+        ) {
+            return client.request({ query, variables }).subscribe({
+                next: (res: GraphQLResponse) => {
+                    if (res.errors) {
+                        if(onError) {
+                            dispatchActionOrArrayOfActions(onError(res.errors))
+                        }
+
+                        dispatch(error(res.errors))
+
+                        return
+                    }
+
+
+                    dispatchActionOrArrayOfActions(onMessage(res))
+                }
+            })
+        }
     }
 }
 
-const wsSubscribe = (
-    client: SubscriptionClient,
-    dispatch: Dispatch<Action<any>>,
-    { query, variables, onMessage, onError }: SubscriptionPayload
-) => {
-    return client.request({ query, variables }).subscribe({
-        next: (res: GraphQLResponse) => {
-            if (res.errors) {
-                return dispatch(onError ? onError(res.errors) : error(res.errors))
-            }
 
-            return dispatch(onMessage(res))
-        }
-    })
-}
 
-function deregisterHandlers(handlerMap: HandlerMap) {
-    Object.keys(handlerMap).forEach(handlerkey => {
-        if (typeof handlerMap[handlerkey] === 'function') {
-            handlerMap[handlerkey]()
-            handlerMap[handlerkey] = null
-        }
-    })
-}
+
+
+
