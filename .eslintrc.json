@@ -302,5 +302,22 @@
     ],
     "template-curly-spacing": ["error", "never"],
     "yield-star-spacing": ["error", "after"]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["app/**/*.ts", "app/**/*.tsx"],
+      "plugins": ["@typescript-eslint"],
+      "rules": {
+        "no-unused-vars": ["off"],
+        "no-undef": ["off"]
+      },
+      "parser": "@typescript-eslint/parser",
+      "settings": {
+        "import/resolver": {
+          "node": true,
+          "eslint-import-resolver-typescript": true
+        }
+      }
+    }
+  ]
 }
