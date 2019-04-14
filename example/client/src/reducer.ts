@@ -1,5 +1,5 @@
 import { ExecutionResult } from 'graphql'
-import { FSA as Action } from '@vital-software/flux-standard-action'
+import { FSA as Action } from 'flux-standard-action'
 import { GraphQLError } from 'graphql'
 import { ReduxGraphQLSubscriptionActionUnion } from 'redux-graphql-subscriptions'
 

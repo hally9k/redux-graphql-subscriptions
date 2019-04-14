@@ -1,4 +1,4 @@
-import { FSA as Action } from '@vital-software/flux-standard-action';
+import { FSA as Action } from 'flux-standard-action';
 import { ExecutionResult as GraphQLResponse, GraphQLError } from 'graphql';
 import { ClientOptions } from 'subscriptions-transport-ws';
 import { Store, Dispatch } from 'redux';
@@ -35,10 +35,10 @@ export declare type ConnectionPayload = {
 };
 declare const CONNECT = "redux-graphql-subscriptions/CONNECT";
 declare type ConnectAction = Action<typeof CONNECT, ConnectionPayload>;
-export declare const connect: (payload: ConnectionPayload) => import("@vital-software/flux-standard-action").FluxStandardAction<"redux-graphql-subscriptions/CONNECT", ConnectionPayload, undefined>;
+export declare const connect: (payload: ConnectionPayload) => import("flux-standard-action").FluxStandardAction<"redux-graphql-subscriptions/CONNECT", ConnectionPayload, undefined>;
 declare const DISCONNECT = "redux-graphql-subscriptions/DISCONNECT";
 declare type DisconnectAction = Action<typeof DISCONNECT>;
-export declare const disconnect: () => import("@vital-software/flux-standard-action").FluxStandardAction<"redux-graphql-subscriptions/DISCONNECT", undefined, undefined>;
+export declare const disconnect: () => import("flux-standard-action").FluxStandardAction<"redux-graphql-subscriptions/DISCONNECT", undefined, undefined>;
 declare const SUBSCRIBE = "redux-graphql-subscriptions/SUBSCRIBE";
 export declare type SubscribeAction = Action<typeof SUBSCRIBE, SubscriptionPayload>;
 export declare type SubscribeActionCreator = (subscription: SubscriptionPayload) => SubscribeAction;
@@ -49,8 +49,8 @@ export declare type UnubscribeActionCreator = (key: string) => UnsubscribeAction
 export declare const unsubscribe: UnubscribeActionCreator;
 declare const ERROR = "redux-graphql-subscriptions/ERROR";
 declare type ErrorAction = Action<typeof ERROR, readonly GraphQLError[]>;
-export declare const error: (payload: readonly GraphQLError[]) => import("@vital-software/flux-standard-action").FluxStandardAction<"redux-graphql-subscriptions/ERROR", readonly GraphQLError[], undefined>;
+export declare const error: (payload: readonly GraphQLError[]) => import("flux-standard-action").FluxStandardAction<"redux-graphql-subscriptions/ERROR", readonly GraphQLError[], undefined>;
 export declare type ReduxGraphQLSubscriptionActionUnion = ConnectAction | DisconnectAction | SubscribeAction | UnsubscribeAction | ErrorAction;
 export declare const WS_CLIENT_STATUS: WsClientStatusMap;
-export declare function createMiddleware<S>(): ({ dispatch }: Store<S, import("redux").AnyAction>) => (next: Dispatch<import("@vital-software/flux-standard-action").FluxStandardAction<any, any, any>>) => (action: ReduxGraphQLSubscriptionActionUnion) => ReduxGraphQLSubscriptionActionUnion;
+export declare function createMiddleware<S>(): ({ dispatch }: Store<S, import("redux").AnyAction>) => (next: Dispatch<import("flux-standard-action").FluxStandardAction<any, any, any>>) => (action: ReduxGraphQLSubscriptionActionUnion) => ReduxGraphQLSubscriptionActionUnion;
 export {};

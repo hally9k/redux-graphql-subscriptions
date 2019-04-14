@@ -1,5 +1,5 @@
 import {
-    FSA as Action  } from '@vital-software/flux-standard-action'
+    FSA as Action  } from 'flux-standard-action'
 import { ExecutionResult as GraphQLResponse, GraphQLError } from 'graphql'
 import { SubscriptionClient, ClientOptions } from 'subscriptions-transport-ws'
 import { Store, Dispatch } from 'redux'

@@ -52,13 +52,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.13.4.tgz#f83ec3c3e05b174b7241fadeb6688267fe5b22ca"
   integrity sha512-+rabAZZ3Yn7tF/XPGHupKIL5EcAbrLxnTr/hgQICxbeuAfWtT0UZSfULE+ndusckBItcv4o6ZeOJplQikVcLvQ==
 
-"@vital-software/flux-standard-action@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@vital-software/flux-standard-action/-/flux-standard-action-3.0.1.tgz#7852e10f589006a9914b84696979d0ff42e2f440"
-  integrity sha512-eWvtTH95B7cCy1yz8AyY2+28fP98lPRWZUCzG5Ng+6Z1gepH5d9SCcHkEkxeSQMdYOokWqd/WyOAjN5EYqYvSw==
-  dependencies:
-    lodash "^4.17.11"
-
 abab@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.0.tgz#aba0ab4c5eee2d4c79d3487d85450fb2376ebb0f"
@@ -1452,10 +1445,10 @@ flat-cache@^1.2.1:
     rimraf "~2.6.2"
     write "^0.2.1"
 
-flux-standard-action@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/flux-standard-action/-/flux-standard-action-2.0.4.tgz#258569a87f6412aa75222253ccb3da95542c62ff"
-  integrity sha512-K2z1GW9xMbv66k3G/wBndb5OD+eDpynHj4tXsPNtEbHxJFG4JXaam6STx212iGSsOcMuK5NnTEWHoHiD/Wi2oA==
+flux-standard-action@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/flux-standard-action/-/flux-standard-action-2.1.0.tgz#23713a545ee49d62bd067e77d63f8c691561c94c"
+  integrity sha512-9Gd5RIfxyvS33xfxRf/ePOBKcPe4BlMu6qg6aS+kieTcVLgn19O6t/n7TY2deT5L0uhUSFpJg2fq5BpUsShpfw==
   dependencies:
     lodash "^4.17.11"
 
