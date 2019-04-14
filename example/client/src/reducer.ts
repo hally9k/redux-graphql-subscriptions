@@ -1,7 +1,7 @@
 import { ExecutionResult } from 'graphql'
 import { FSA as Action } from '@vital-software/flux-standard-action'
 import { GraphQLError } from 'graphql'
-import { ReduxGraphQLSubscriptionActionUnion } from '../../../src'
+import { ReduxGraphQLSubscriptionActionUnion } from 'redux-graphql-subscriptions'
 
 const TIME_EVENT_RECEIVED = 'example-app/TIME_EVENT_RECEIVED'
 type TimeEventRecievedAction = Action<typeof TIME_EVENT_RECEIVED, number>
@@ -53,7 +53,7 @@ type ActionUnion =
   | ColorEventReceivedAction
   | ColorUnsubscribedAction
   | FailureAction
-  | ReduxGraphQLSubscriptionActionUnion // Note that to strongly type the actions in our store we must add redux-graphql-subscription'smiddleware's actions to the store's action union.
+  | ReduxGraphQLSubscriptionActionUnion // Note that to strongly type the actions in our store we must add redux-graphql-subscription's middleware's actions to the store's action union.
 
 export default function(state: AppState = INITIAL_STATE, action: ActionUnion) {
   const { type, payload } = action

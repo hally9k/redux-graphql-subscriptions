@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import format from 'date-fns/format'
-import { SubscribeAction, UnsubscribeAction } from '../../../../src'
+import { SubscribeAction, UnsubscribeAction } from 'redux-graphql-subscriptions'
 
 export interface DispatchProps {
   subscribe: () => SubscribeAction

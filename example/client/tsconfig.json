@@ -1,7 +1,5 @@
-/* packages/react-components/tsconfig.json */
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "sourceMap": true,
@@ -13,12 +11,11 @@
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "target": "es2015",
     "outDir": "lib",
-    "module": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
-    "declaration": true,
     "strict": false,
     "lib": [
       "es2015",
@@ -29,15 +26,9 @@
       "dom",
       "esnext.asynciterable"
     ],
-    "paths": {
-      "*": [
-        "./node_modules",
-        "./node_modules/@types/*",
-        "./typings/*",
-        "./src/*",
-        "*"
-      ]
-    }
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "isolatedModules": true
   },
-  "include": ["typings", "src/**/*.ts"]
+  "include": ["./typings/*", "src/**/*.ts"]
 }

@@ -3,11 +3,20 @@ import graphqlHTTP from 'koa-graphql'
 import Koa from 'koa'
 import mount from 'koa-mount'
 import { createServer } from 'http'
-import { SubscriptionServer } from 'subscriptions-transport-ws'
+import {
+  SubscriptionServer,
+  OperationMessage,
+  ExecutionParams,
+} from 'subscriptions-transport-ws'
 import { execute, subscribe } from 'graphql'
-import { WEBSOCKET_PATH, WEBSOCKET_URL, APP_URL, PORT } from '../config'
+import {
+  WEBSOCKET_PATH,
+  WEBSOCKET_URL,
+  APP_URL,
+  PORT,
+} from '../client/src/config'
 
-import schema from './schema/index.js'
+import schema from './schema'
 
 const server = new Koa()
 
@@ -20,7 +29,7 @@ server.use(
       schema,
       graphiql: true,
       subscriptionsEndpoint: WEBSOCKET_URL,
-      formatError: (error: any) => ({
+      formatError: (error: { message: string; status: number }) => ({
         message: error.message,
         status: error.status,
       }),
@@ -39,15 +48,15 @@ ws.listen(PORT, () => {
       subscribe,
       schema,
       // Drop the message Id into the ctx for the pubsub channel
-      onOperation: (message: any, params: any, webSocket: any) => ({
+      onOperation: (message: OperationMessage, params: ExecutionParams) => ({
         ...params,
         context: { ...params.context, id: message.id },
       }),
       onConnect: (connectionParams: any) => {
         console.log('Connection established: ', connectionParams)
       },
-      onDisconnect: (x: any, y: any) => {
-        console.log('Disconnected: ', x, y)
+      onDisconnect: () => {
+        console.log('Disconnected')
       },
     },
     {

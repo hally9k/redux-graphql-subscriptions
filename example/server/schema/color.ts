@@ -1,6 +1,7 @@
 import { GraphQLString } from 'graphql'
+import { PubSub } from 'graphql-subscriptions'
 
-export const color = (pubsub: any) => {
+export const color = (pubsub: PubSub) => {
   let CHANNEL_ID = '*'
 
   setInterval(() => {
@@ -11,7 +12,7 @@ export const color = (pubsub: any) => {
 
   return {
     type: GraphQLString,
-    subscribe: (_: any, variables: any, ctx: any) => {
+    subscribe: (_: any, __: any, ctx: { id: string }) => {
       console.log(`Subscribed to ${ctx.id}`)
       CHANNEL_ID = `color-${ctx.id}`
 

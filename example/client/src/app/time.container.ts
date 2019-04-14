@@ -3,9 +3,14 @@ import { failure, timeEventReceived, timeUnsubscribed } from '../reducer'
 import App, { StateProps, DispatchProps } from './time'
 
 import { Dispatch } from 'redux'
-import { subscribe, unsubscribe, SubscriptionPayload } from '../../../../src'
+import {
+  subscribe,
+  unsubscribe,
+  SubscriptionPayload,
+  SubscribeAction,
+  UnsubscribeAction,
+} from 'redux-graphql-subscriptions'
 import { AppState } from '../reducer'
-import { SubscribeAction, UnsubscribeAction } from '../../../../src'
 
 const query = `
     subscription Time {

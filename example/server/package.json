@@ -23,9 +23,10 @@
     "@types/koa-mount": "^3.0.1",
     "nodemon": "^1.18.7",
     "ts-node": "^8.0.3",
+    "tslib": "^1.9.3",
     "typescript": "^3.4.3"
   },
   "scripts": {
-    "start": "ts-node ./index.js"
+    "start": "ts-node --files ./index.ts "
   }
 }

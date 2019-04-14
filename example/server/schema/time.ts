@@ -1,6 +1,7 @@
 import { GraphQLFloat } from 'graphql'
+import { PubSub } from 'graphql-subscriptions'
 
-export const time = (pubsub: any) => {
+export const time = (pubsub: PubSub) => {
   let CHANNEL_ID = '_'
 
   setInterval(() => {
@@ -11,7 +12,7 @@ export const time = (pubsub: any) => {
 
   return {
     type: GraphQLFloat,
-    subscribe: (_: any, variables: any, ctx: any) => {
+    subscribe: (_: any, __: any, ctx: { id: string }) => {
       console.log(`Subscribed to ${ctx.id}`)
       CHANNEL_ID = `time-${ctx.id}`
 

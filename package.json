@@ -14,7 +14,7 @@
   ],
   "author": "Hal Smith Stevens <hally9k@gmail.com> (https://github.com/hally9k)",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "devDependencies": {
     "@types/graphql": "^14.2.0",
     "eslint": "5.6.0",
@@ -39,7 +39,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:debug": "node --inspect ./node_modules/.bin/jest --watch --runInBand",
     "start": "tsc --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "y build"
   },
   "peerDependencies": {
     "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.1 || ^14.0.2",

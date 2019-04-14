@@ -5,8 +5,12 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { applyMiddleware, createStore } from 'redux'
 import reducer, { AppState } from './reducer'
 import { Provider } from 'react-redux'
-import { WEBSOCKET_URL } from '../../config'
-import { connect, createMiddleware, ConnectionPayload } from '../../../src'
+import { WEBSOCKET_URL } from './config'
+import {
+  connect,
+  createMiddleware,
+  ConnectionPayload,
+} from 'redux-graphql-subscriptions'
 import { createLogger } from 'redux-logger'
 
 const connectionPayload: ConnectionPayload = {

@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { SubscribeAction, UnsubscribeAction } from '../../../../src'
+/// <reference path="../../../../lib/index.d.ts" />
+import { SubscribeAction, UnsubscribeAction } from 'redux-graphql-subscriptions'
 
 const root: any = document.querySelector(':root')
 

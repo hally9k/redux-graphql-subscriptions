@@ -19,7 +19,7 @@ const schema = new GraphQLSchema({
     fields: {
       time: {
         type: GraphQLFloat,
-        resolve: (_, __, ctx) => {
+        resolve: () => {
           return Date.now()
         },
       },
