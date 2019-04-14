@@ -123,31 +123,29 @@ export function createMiddleware<S>() {
 
     return ({ dispatch }: Store<S>) => {
         return (next: Dispatch<Action<any, any, any>>) => (action: ReduxGraphQLSubscriptionActionUnion) => {
-            const { type } = action
-
-            if (type === CONNECT && !wsClient) {
+            if (action.type === CONNECT && !wsClient) {
                 const {
                     options,
                     handlers,
                     url,
                     protocols,
                     disconnectionTimeout = 0
-                }: ConnectionPayload = action.payload as ConnectionPayload // FIXME: Can't work out why this can't discriminate between the types
+                }: ConnectionPayload = action.payload
 
                 wsClient = new SubscriptionClient(url, options, null, protocols)
                 registerHandlers(handlers, disconnectionTimeout)
                 
             }
-            if (type === DISCONNECT && wsClient) {
+            if (action.type === DISCONNECT && wsClient) {
                 actionQueue = []
                 unsubscriberMap = {}
                 deregisterHandlers()
                 wsClient.close()
                 wsClient = null
             }
-            if (type === SUBSCRIBE) {
+            if (action.type === SUBSCRIBE) {
                 if (wsClient && wsClient.status === WS_CLIENT_STATUS.OPEN) {
-                    const payload: SubscriptionPayload = action.payload as SubscriptionPayload // FIXME: Can't work out why this can't discriminate between the types
+                    const payload: SubscriptionPayload = action.payload
                     const {
                         key,
                         onUnsubscribe,
@@ -176,8 +174,8 @@ export function createMiddleware<S>() {
                     actionQueue.push(action)
                 }
             }
-            if (type === UNSUBSCRIBE && wsClient) {
-                const key: string = action.payload as string // FIXME: Can't work out why this can't discriminate between the types
+            if (action.type === UNSUBSCRIBE && wsClient) {
+                const key: string = action.payload
 
                 if (typeof unsubscriberMap[key] === 'function') {
                     unsubscriberMap[key]()
