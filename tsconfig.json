@@ -40,5 +40,6 @@
       ]
     }
   },
-  "include": ["typings", "src/**/*.ts"]
+  "include": ["typings", "src/**/*.ts"],
+  "exclude": ["src/**/*.test.ts"]
 }

@@ -1,6 +1,6 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "1.0.0-alpha.52",
+  "version": "2.0.0-alpha.1",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   "main": "lib/index.js",
   "devDependencies": {
     "@types/graphql": "^14.2.0",
+    "@types/jest": "^24.0.11",
     "eslint": "5.6.0",
     "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-compat": "^2.0.1",
@@ -47,6 +48,7 @@
     "redux": ">=3.7.0"
   },
   "dependencies": {
-    "@vital-software/flux-standard-action": "^3.0.1"
+    "@vital-software/flux-standard-action": "^3.0.1",
+    "ts-jest": "^24.0.2"
   }
 }
