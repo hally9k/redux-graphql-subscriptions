@@ -1,6 +1,6 @@
 import { FSA as Action } from '@vital-software/flux-standard-action';
 import { ExecutionResult as GraphQLResponse, GraphQLError } from 'graphql';
-import { ClientOptions } from 'subscriptions-transport-ws-hally9k';
+import { ClientOptions } from 'subscriptions-transport-ws';
 import { Store, Dispatch } from 'redux';
 declare type WsClientStatusMap = {
     CLOSED: 3;

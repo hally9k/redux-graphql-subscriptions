@@ -1,7 +1,7 @@
 import {
     FSA as Action  } from '@vital-software/flux-standard-action'
 import { ExecutionResult as GraphQLResponse, GraphQLError } from 'graphql'
-import { SubscriptionClient, ClientOptions } from 'subscriptions-transport-ws-hally9k'
+import { SubscriptionClient, ClientOptions } from 'subscriptions-transport-ws'
 import { Store, Dispatch } from 'redux'
 
 type FunctionMap = { [key: string]: Function | null }
