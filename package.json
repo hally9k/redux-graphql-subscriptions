@@ -1,6 +1,6 @@
 {
   "name": "redux-graphql-subscriptions",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "description": "A Redux middleware for managing GraphQL Subscriptions.",
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
     "redux": "^4.0.1",
     "rollup": "^1.10.0",
     "rollup-plugin-typescript": "^1.0.1",
-    "subscriptions-transport-ws": "0.9.16",
+    "ts-jest": "^24.0.2",
     "tslib": "^1.9.3",
     "typescript": "^3.4.3"
   },
@@ -45,10 +45,13 @@
   },
   "peerDependencies": {
     "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.1 || ^14.0.2",
-    "redux": ">=3.7.0",
-    "subscriptions-transport-ws": ">=0.9.16"
+    "redux": ">=3.7.0"
   },
   "dependencies": {
-    "ts-jest": "^24.0.2"
+    "subscriptions-transport-ws": "^0.9.16"
+  },
+  "typings": "lib/index.d.ts",
+  "typescript": {
+    "definition": "lib/index.d.ts"
   }
 }
