@@ -30,7 +30,7 @@ export declare type ConnectionPayload = {
         onReconnecting?: () => ActionOrArrayOfActions;
     };
     options: ClientOptions;
-    protocols?: string | Array<string>;
+    webSocketProtocols?: string | Array<string>;
     url: string;
 };
 declare const CONNECT = "redux-graphql-subscriptions/CONNECT";
