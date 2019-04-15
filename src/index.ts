@@ -44,7 +44,7 @@ export type ConnectionPayload = {
         onReconnecting?: () => ActionOrArrayOfActions
     },
     options: ClientOptions,
-    protocols?: string | Array<string>,
+    webSocketProtocols?: string | Array<string>,
     url: string
 }
 
@@ -128,11 +128,11 @@ export function createMiddleware<S>() {
                     options,
                     handlers,
                     url,
-                    protocols,
+                    webSocketProtocols,
                     disconnectionTimeout = 0
                 }: ConnectionPayload = action.payload
 
-                wsClient = new SubscriptionClient(url, options, null, protocols)
+                wsClient = new SubscriptionClient(url, options, null, webSocketProtocols)
                 registerHandlers(handlers, disconnectionTimeout)
                 
             }
