@@ -14,7 +14,7 @@
     "downlevelIteration": true,
     "skipLibCheck": true,
     "jsx": "react",
-    "target": "es2015",
+    "target": "es5",
     "outDir": "lib",
     "module": "es2015",
     "moduleResolution": "node",

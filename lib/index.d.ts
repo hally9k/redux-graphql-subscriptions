@@ -30,6 +30,7 @@ export declare type ConnectionPayload = {
         onReconnecting?: () => ActionOrArrayOfActions;
     };
     options: ClientOptions;
+    webSocketImpl?: any;
     webSocketProtocols?: string | Array<string>;
     url: string;
 };
