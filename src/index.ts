@@ -211,10 +211,13 @@ export function createMiddleware<S>() {
                     )
                 }
         
-                if (typeof handlers.onDisconnected === 'function') {
+                if (typeof handlers.onDisconnected === 'function' || typeof handlers.onDisconnectionTimeout === 'function') {
                     handlerMap.onDisconnected = wsClient.onDisconnected(
                         () => {
-                            dispatch(handlers.onDisconnected())
+
+                            if(typeof handlers.onDisconnected === 'function') {
+                                dispatch(handlers.onDisconnected())
+                            }
         
                             if (
                                 typeof handlers.onDisconnectionTimeout ===
