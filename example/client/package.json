@@ -16,7 +16,7 @@
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.6",
     "redux-logger": "^3.0.6",
-    "subscriptions-transport-ws-hally9k": "0.0.1-alpha.4"
+    "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {
     "react-scripts": "^2.1.1",
