@@ -301,9 +301,9 @@ export function createMiddleware<S>() {
                     if (res.errors) {
                         if(onError) {
                             dispatchActionOrArrayOfActions(onError(res.errors))
+                        } else {
+                            dispatch(error(res.errors))
                         }
-
-                        dispatch(error(res.errors))
 
                         return
                     }
