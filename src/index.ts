@@ -109,6 +109,7 @@ export const WS_CLIENT_STATUS: WsClientStatusMap = {
 export function createMiddleware<S>() {
     let actionQueue: Array<ReduxGraphQLSubscriptionActionUnion> = [],
         disconnectionTimeoutId: NodeJS.Timeout | null,
+        disconnectionWarningTimeoutId: NodeJS.Timeout | null,
         unsubscriberMap: FunctionMap = {},
         wsClient: SubscriptionClient | null = null
 
@@ -218,7 +219,11 @@ export function createMiddleware<S>() {
                         () => {
 
                             if(typeof handlers.onDisconnected === 'function') {
-                                dispatch(handlers.onDisconnected())
+                                 disconnectionWarningTimeoutId = setTimeout(
+                                        () => dispatch(handlers.onDisconnected()),
+                                        1000
+                                    )
+                               
                             }
         
                             if (
@@ -248,6 +253,10 @@ export function createMiddleware<S>() {
                 if (typeof handlers.onReconnected === 'function') {
                     handlerMap.onReconnected = wsClient.onReconnected(
                         () => {
+                            if(disconnectionWarningTimeoutId) {
+                                clearTimeout(disconnectionWarningTimeoutId)
+                                disconnectionWarningTimeoutId = null
+                            }
                             if (disconnectionTimeoutId) {
                                 clearTimeout(disconnectionTimeoutId)
                                 disconnectionTimeoutId = null
